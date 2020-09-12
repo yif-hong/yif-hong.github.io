@@ -208,7 +208,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/" rel="tag">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/" rel="tag">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a></li></ul>
+                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CLRS/" rel="tag">CLRS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/" rel="tag">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/" rel="tag">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a></li></ul>
                     </div>
                 </section>
                 
@@ -290,6 +290,92 @@
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-QuickSort-Review" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/09/12/QuickSort-Review/" class="article-date">
+      <time datetime="2020-09-12T09:32:51.000Z" itemprop="datePublished">2020-09-12</time>
+</a>
+
+ 
+    <a href="/2020/09/12/QuickSort-Review/#comments" title="查看评论">
+        <i class="fa fa-comments-o" aria-hidden="true"></i>
+        <span class="count-comment"></span>
+        
+        
+            <span class="disqus-comment-count" data-disqus-identifier="2020/09/12/QuickSort-Review/"></span>
+        
+    </a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/09/12/QuickSort-Review/">QuickSort Summary</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="QuickSort-Summary"><a href="#QuickSort-Summary" class="headerlink" title="QuickSort Summary"></a>QuickSort Summary</h1><h2 id="Complexity"><a href="#Complexity" class="headerlink" title="Complexity"></a>Complexity</h2><ul>
+<li>Best:       O(nlgn)     </li>
+<li>Average:    O(nlgn)     random inputs</li>
+<li>Bad:        O(n^2)      sorted inputs, repeat inputs</li>
+</ul>
+<h2 id="lt-CLRS-3-gt"><a href="#lt-CLRS-3-gt" class="headerlink" title="&lt;CLRS#3&gt;"></a>&lt;CLRS#3&gt;</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">sort(A,1,A.length)</span><br><span class="line"></span><br><span class="line">sort(A,p,r):</span><br><span class="line">    if p &lt; r</span><br><span class="line">        q &#x3D; partition(A,p,r)</span><br><span class="line">        sort(A,0,q-1)</span><br><span class="line">        sort(A,q+1,r)</span><br><span class="line"></span><br><span class="line">partition(A,p,r):</span><br><span class="line">    x &#x3D; A[r]</span><br><span class="line">    i &#x3D; p-1</span><br><span class="line">    for j &#x3D; p to r-1:</span><br><span class="line">        if A[j] &lt;&#x3D; x:</span><br><span class="line">            i &#x3D; i + 1</span><br><span class="line">            exchange A[i] with A[j]</span><br><span class="line">    exchange A[i+1] with A[r]</span><br><span class="line">    return i+1</span><br></pre></td></tr></table></figure>
+
+<h2 id="lt-Algorithm-4-gt"><a href="#lt-Algorithm-4-gt" class="headerlink" title="&lt;Algorithm#4&gt;"></a>&lt;Algorithm#4&gt;</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">sort(A,1,A.length)</span><br><span class="line"></span><br><span class="line">sort(A,p,r):</span><br><span class="line">    if p &lt; r</span><br><span class="line">        q &#x3D; partition(A,p,r)</span><br><span class="line">        sort(A,0,q-1)</span><br><span class="line">        sort(A,q+1,r)</span><br><span class="line"></span><br><span class="line">partition(A,p,r):</span><br><span class="line">    x &#x3D; A[p]</span><br><span class="line">    i &#x3D; p</span><br><span class="line">    j &#x3D; r+1</span><br><span class="line">    while i &lt; j</span><br><span class="line">        while A[i] &lt; x</span><br><span class="line">            i &#x3D; i+1</span><br><span class="line">            if i &#x3D;&#x3D; r</span><br><span class="line">                break</span><br><span class="line">        while A[j] &gt; x</span><br><span class="line">            j &#x3D; j-1</span><br><span class="line">            if j &#x3D;&#x3D; p</span><br><span class="line">                break</span><br><span class="line">        exchange A[i] with A[j]</span><br><span class="line">    exchange A[j] with A[p]</span><br><span class="line">    return j</span><br></pre></td></tr></table></figure>
+
+<h3 id="Optimization"><a href="#Optimization" class="headerlink" title="Optimization:"></a>Optimization:</h3><ol>
+<li>Change to Insertion-Sort while sub-array’s item less than 5~15</li>
+<li>Quick partition: Find middle item and set size 3 to make partition.</li>
+<li>Dijkstra: [Quick3Way] for repeat inputs. Best O(N). Bad O(NlgN)<h4 id="Quick3Way"><a href="#Quick3Way" class="headerlink" title="Quick3Way"></a>Quick3Way</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">sort(A,1,A.length)</span><br><span class="line"></span><br><span class="line">sort(A,p,r):</span><br><span class="line">    if p &lt; r</span><br><span class="line">        &#x2F;&#x2F; [p,lt) &lt;&#x3D; [lt,gt) &lt;&#x3D; [gt,r]</span><br><span class="line">        lt &#x3D; p</span><br><span class="line">        gt &#x3D; r</span><br><span class="line">        i &#x3D; p+1</span><br><span class="line">        x &#x3D; a[p]</span><br><span class="line">        while i &lt;&#x3D; gt</span><br><span class="line">            if A[i] &lt; p</span><br><span class="line">                exchange A[lt] with A[i]</span><br><span class="line">                lt &#x3D; lt+1</span><br><span class="line">                i &#x3D; i+1</span><br><span class="line">            else if A[i] &gt; p</span><br><span class="line">                exchange A[i] with A[gt]</span><br><span class="line">                gt &#x3D; gt-1</span><br><span class="line">            else</span><br><span class="line">                i &#x3D; i+1</span><br><span class="line">    sort(A,p,lt-1)</span><br><span class="line">    sort(A,gt+1,r)</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Algorithm/">Algorithm</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CLRS/" rel="tag">CLRS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-BaseSort" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -992,87 +1078,6 @@
       
         <p class="article-more-link">
           <a href="/2018/08/19/HashTable/#more">阅读全文 >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-RedBlackBST" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2018/08/19/RedBlackBST/" class="article-date">
-      <time datetime="2018-08-18T17:23:51.000Z" itemprop="datePublished">2018-08-19</time>
-</a>
-
- 
-    <a href="/2018/08/19/RedBlackBST/#comments" title="查看评论">
-        <i class="fa fa-comments-o" aria-hidden="true"></i>
-        <span class="count-comment"></span>
-        
-        
-            <span class="disqus-comment-count" data-disqus-identifier="2018/08/19/RedBlackBST/"></span>
-        
-    </a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/19/RedBlackBST/">红黑树</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <blockquote>
-<p><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter3_3/RedBlackBST.java">Github源码地址</a></p>
-</blockquote>
-<p><em>此篇需要二叉树基本知识，若对二叉树不了解，请移步<a href="/2018/08/19/BST">一篇文章搞懂二叉树！</a></em></p>
-<p>Welcome back!  </p>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Algorithm/">Algorithm</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a href="/2018/08/19/RedBlackBST/#more">阅读全文 >></a>
         </p>
       
       <div class="clearfix"></div>
