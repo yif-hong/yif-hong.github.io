@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Yif Hong" />
+
+
+
+<meta name="description" content="基础排序算法涉及到选择（冒泡）排序、插入排序、希尔排序、归并排序、快速排序、堆排序、优先队列，这几种算法分别拥有不同的特点及实现，下面就简单介绍一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="排序算法——基于比较的算法">
+<meta property="og:url" content="http://yif-hong.github.io/2018/09/29/BaseSort/index.html">
+<meta property="og:site_name" content="Yif">
+<meta property="og:description" content="基础排序算法涉及到选择（冒泡）排序、插入排序、希尔排序、归并排序、快速排序、堆排序、优先队列，这几种算法分别拥有不同的特点及实现，下面就简单介绍一下。">
+<meta property="og:locale">
+<meta property="og:image" content="http://pdjydlit1.bkt.clouddn.com/heap-representations.png">
+<meta property="og:image" content="http://pdjydlit1.bkt.clouddn.com/IndexPQ.jpg">
+<meta property="article:published_time" content="2018-09-29T10:52:28.000Z">
+<meta property="article:modified_time" content="2020-09-12T08:12:15.277Z">
+<meta property="article:author" content="Yif Hong">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://pdjydlit1.bkt.clouddn.com/heap-representations.png">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Yif" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>排序算法——基于比较的算法 | Yif</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bea9f3e6e421e5"></script>
+
+
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/"></a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:yifhongrui@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" rel="noopener" href="https://weibo.com/u/3852481088" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" rel="noopener" href="https://github.com/yif-hong" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" rel="noopener" href="https://www.zhihu.com/people/hong-yifeng-7" title="知乎"></a>
+                            
+                                <a class="fa 简书" target="_blank" rel="noopener" href="https://www.jianshu.com/u/b256468d0120" title="简书"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" rel="noopener" href="https://music.163.com/#/user/home?id=57389967" title="网易云音乐"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/" rel="tag">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/" rel="tag">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://github.com/yif-hong">GitHub</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Alone</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页"></a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页"></a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:yifhongrui@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/u/3852481088" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/yif-hong" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/people/hong-yifeng-7" title="知乎"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="https://www.jianshu.com/u/b256468d0120" title="简书"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="https://music.163.com/#/user/home?id=57389967" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-BaseSort" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/09/29/BaseSort/" class="article-date">
+      <time datetime="2018-09-29T10:52:28.000Z" itemprop="datePublished">2018-09-29</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      排序算法——基于比较的算法
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Algorithm/">Algorithm</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>基础排序算法涉及到<strong>选择（冒泡）排序、插入排序、希尔排序、归并排序、快速排序、堆排序、优先队列</strong>，这几种算法分别拥有不同的特点及实现，下面就简单介绍一下。</p>
+<a id="more"></a>
+
+<h3 id="公共方法"><a href="#公共方法" class="headerlink" title="公共方法"></a>公共方法</h3><p>在统一介绍之前，利用Java特性，这里先抽象出几个公共的方法特性。另外，所有元素都实现了<code>Comparable</code>接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseSort</span> </span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span></span>;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">less</span><span class="params">(Comparable[] a, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">return</span> a[i].compareTo(a[j]) &lt; <span class="number">0</span>;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">exchange</span><span class="params">(Comparable[] a, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">           Comparable temp =a[i];</span><br><span class="line">           a[i] = a[j];</span><br><span class="line">           a[j] = temp;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h3><p>选择排序是对冒泡排序的一种改进，减少了交换次数。以从小到大的排序为例，从第一位开始，依次向后遍历并将剩余数组中最小的元素交换到遍历的起点。</p>
+<ul>
+<li>从起点遍历，依次减小遍历范围</li>
+<li>找出遍历的剩余数组中的最小值</li>
+<li>与遍历起点交换</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SelectionSort</span> <span class="keyword">extends</span> <span class="title">BaseSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; a.length; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> min = i;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; a.length; j++)</span><br><span class="line">                <span class="keyword">if</span> (less(a, j, min)) min = j;</span><br><span class="line">            exchange(a, i, min);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>性能：比较 N^2/2 + 交换 3/2 N，最差情况<strong>N^2级别</strong></p>
+</blockquote>
+<h3 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h3><p>插入排序可以理解为打扑克牌时的动作，将牌插入手中牌堆合适的位置。</p>
+<p>以从小到大的排序为例，如果此时插入的牌在手牌中第一次找到了比他小的牌，那么此时位置确定，因为前面的牌都比要插入的小，且已排好顺序。</p>
+<ul>
+<li>第一位不用排序</li>
+<li>第二位开始与前面的元素进行比较</li>
+<li>若比他前一位小，则交换位置</li>
+<li>找到第一个比他小的，即确定位置</li>
+<li>遍历直至最后</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">InsertionSort</span> <span class="keyword">extends</span> <span class="title">BaseSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; a.length; i++)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt; <span class="number">0</span> &amp;&amp; less(a, j, j - <span class="number">1</span>); j--)</span><br><span class="line">                exchange(a, j, j - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>性能：比较 N^2/4 + 交换 N^2/4 ，最差情况<strong>N^2级别</strong></p>
+</blockquote>
+<h3 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h3><p>插入排序面对数据量较小时还可以，但是对于数据偏大则有些力不从心了。希尔排序是针对插入排序的一种优化切分算法，采用分治思想。时间复杂度突破了N^2级别，但是空间复杂度却能保持O (1)。而快速排序算法采用的辅助栈则在空间上无法比拟希尔排序。</p>
+<ul>
+<li>先将序列分成较多个子序列分别进行排序，再分成较少个子序列分别进行排序，直到最后为一个序列排序</li>
+<li>子序列的排序使用插入排序</li>
+</ul>
+<p>这里的子序列是通过增量h来分割的，每隔h位形成一个有序的子序列。这里采用1/3切分，性能较好。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ShellSort</span> <span class="keyword">extends</span> <span class="title">BaseSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> h = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (h &lt; a.length / <span class="number">3</span>) h = h * <span class="number">3</span> + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (h &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = h; i &lt; a.length; i++)</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt; h &amp;&amp; less(a, j, j - h); j -= h)</span><br><span class="line">                    exchange(a, j, j - h);</span><br><span class="line">            h /= <span class="number">3</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>性能：在 <strong>NlogN 和 N^2</strong> 之间。</p>
+</blockquote>
+<h3 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h3><p>归并排序是典型的分治思想算法，通过将数组分为各个小数组并排序后合并实现有序。</p>
+<p>由于归并排序总是将数组分为2个子数组，所以，在算法执行的过程中可以将其排序视作二叉树，其算法所需的复杂度也在NlogN级别。</p>
+<h4 id="合并"><a href="#合并" class="headerlink" title="合并"></a>合并</h4><p>合并是将两个有序的数组合并成一个有序的大数组，这是归并排序的基石。</p>
+<p>借助辅助数组<code>aux[]</code>，将原数组复制到<code>aux[]</code>中，然后依次复制回原数组中，将<code>a[lo...mid]</code>和<code>a[mid+1...hi]</code>归并。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">MergeSort</span> <span class="keyword">extends</span> <span class="title">BaseSort</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> Comparable[] aux;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> mid, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = lo, j = mid + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = lo; k &lt; hi; k++)</span><br><span class="line">            aux[k] = a[k];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = lo; k &lt;= hi; k++)</span><br><span class="line">            <span class="keyword">if</span> (j &gt; hi) a[k] = aux[i++];</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (i &gt; mid) a[k] = aux[j++];</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (less(a, j, i)) a[k] = aux[j++];</span><br><span class="line">            <span class="keyword">else</span> a[k] = aux[i++];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="自顶向下的归并"><a href="#自顶向下的归并" class="headerlink" title="自顶向下的归并"></a>自顶向下的归并</h4><p>对于一个大数组，自然而然的可以考虑使用将其分为两个小数组进行排序然后归并，子数组再次分裂……直至只有两个元素的子数组，此时开始收敛，向上归并。</p>
+<ul>
+<li><strong>化整为零</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MergeUBSort</span> <span class="keyword">extends</span> <span class="title">MergeSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        aux = <span class="keyword">new</span> Comparable[a.length];</span><br><span class="line">        sort(a, <span class="number">0</span>, a.length - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lo &gt;= hi) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">int</span> mid = (lo + hi) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">        sort(a, lo, mid);</span><br><span class="line">        sort(a, mid + <span class="number">1</span>, hi);</span><br><span class="line">        merge(a, lo, mid, hi);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于小规模的子数组可以采用<strong>插入排序</strong>进行优化，一般可以提高10%左右的性能。</p>
+<p>同时也可以不将元素复制到辅助数组，减少复制到辅助数组的时间开销，但是空间无法减小，这也是归并排序的缺陷之一。</p>
+<blockquote>
+<p>性能：1/2NlogN~NlogN</p>
+</blockquote>
+<h4 id="自底向上的归并排序"><a href="#自底向上的归并排序" class="headerlink" title="自底向上的归并排序"></a>自底向上的归并排序</h4><p>在分治思想中，我们处理的问题大多都由大问题转化为小问题，故干脆可以直接从小问题处理入手，转而合并为大问题。</p>
+<ul>
+<li><strong>循序渐进</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MergeBUSort</span> <span class="keyword">extends</span> <span class="title">MergeSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        aux = <span class="keyword">new</span> Comparable[a.length];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> sz = <span class="number">1</span>; sz &lt; a.length; sz += sz)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> lo = <span class="number">0</span>; lo &lt; a.length - sz; lo += sz + sz)</span><br><span class="line">                merge(a, lo, lo + sz - <span class="number">1</span>, Math.min(a.length - <span class="number">1</span>, lo + sz + sz - <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码进行logN次的两两归并。</p>
+<blockquote>
+<p>性能：1/2NlogN~NlogN。</p>
+</blockquote>
+<ul>
+<li>自底向上在数组大小为2的幂时，与自顶向下性能一样，只是访问顺序不同。</li>
+<li>自底向上更适合使用链表作为数据结构排序。</li>
+</ul>
+<h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><p>快速排序利用分治思想，将首位作为标杆，将比他小的放在左边，比他大的放在右边。然后再对两个子数组进行排序。</p>
+<p>最终</p>
+<p>这里采用指针探测法实现。</p>
+<h4 id="切分-partition"><a href="#切分-partition" class="headerlink" title="切分 partition"></a>切分 partition</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = lo, j = hi + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> (less(a, ++i, lo)) <span class="keyword">if</span> (i == hi) <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">while</span> (less(a, lo, --j)) <span class="keyword">if</span> (j == lo) <span class="keyword">break</span>;<span class="comment">//可不必判断</span></span><br><span class="line">        <span class="keyword">if</span> (i &gt;= j) <span class="keyword">break</span>;</span><br><span class="line">        exchange(a, i, j);</span><br><span class="line">    &#125;</span><br><span class="line">    exchange(a, lo, j);</span><br><span class="line">    <span class="keyword">return</span> j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用头尾两个指针i和j，以数组第一位元素v为标杆。</li>
+<li>若i比v小，则继续遍历，直至比v大停止。</li>
+<li>若j比v大，则继续遍历，直至比v小停止。</li>
+<li>交换i和j。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QuickSort</span> <span class="keyword">extends</span> <span class="title">BaseSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        sort(a, <span class="number">0</span>, a.length - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lo &gt;= hi) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">int</span> j = partition(a, lo, hi);</span><br><span class="line">        sort(a, lo, j - <span class="number">1</span>);</span><br><span class="line">        sort(a, j + <span class="number">1</span>, hi);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">        ···</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>性能：一般情况 NlogN ，最差情况<strong>N^2级别</strong>。</p>
+</blockquote>
+<h4 id="快速排序优化"><a href="#快速排序优化" class="headerlink" title="快速排序优化"></a>快速排序优化</h4><p>快速排序在重复数据较小或随机排列数据较多时性能比较好，若在重复数据多，则此时最差情况可达到N^2级别。为此，针对快速排序的优化算法也是十分重要的一点。</p>
+<h5 id="小数组使用插入排序"><a href="#小数组使用插入排序" class="headerlink" title="小数组使用插入排序"></a>小数组使用插入排序</h5><p>插入排序在小数组时性能不错，而对于快排来说，小数组的性能反而不佳。对于小数组的界定一般在5~15之间，具体依据操作系统优化而定。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QuickSort</span> <span class="keyword">extends</span> <span class="title">BaseSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX = <span class="number">10</span>;<span class="comment">//5~15依据操作系统而定</span></span><br><span class="line"></span><br><span class="line">    ···</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (hi &gt;= lo + MAX) &#123;</span><br><span class="line">         <span class="keyword">new</span> InsertionSort.sort(a, lo, hi);<span class="comment">//转向插入排序</span></span><br><span class="line">         <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ···</span><br><span class="line">    &#125;</span><br><span class="line">    ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="三向切分优化重复数组的性能"><a href="#三向切分优化重复数组的性能" class="headerlink" title="三向切分优化重复数组的性能"></a>三向切分优化重复数组的性能</h5><p>维护lt和gt两个指针，从左右向中心遍历，维护切分区域。通过与i遍历指针交换，使得lo<del>lt &lt; lt</del>gt &lt; gt~hi。对于大量重复的数组，此种方法可以减少大量的交换开销。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Quick3WaySort</span> <span class="keyword">extends</span> <span class="title">BaseSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        sort(a, <span class="number">0</span>, a.length - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lo &gt;= hi) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">int</span> lt = lo, gt = hi, i = lt + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &lt;= gt) &#123;</span><br><span class="line">            <span class="keyword">int</span> comp = a[i].compareTo(a[lo]);</span><br><span class="line">            <span class="keyword">if</span> (comp &lt; <span class="number">0</span>) exchange(a, i++, lt++);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (comp &gt; <span class="number">0</span>) exchange(a, i, gt--);</span><br><span class="line">            <span class="keyword">else</span> i++;</span><br><span class="line">        &#125;</span><br><span class="line">        sort(a, lo, lt - <span class="number">1</span>);</span><br><span class="line">        sort(a, gt + <span class="number">1</span>, hi);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然三向切分也可以使用插入排序优化性能。</p>
+<blockquote>
+<p>性能：在大小为N，主键值出现的频率为H，性能为**~NH<strong>。<br>**在重复键值较多的情况下，可以将性能由N^2优化至N级别。</strong></p>
+</blockquote>
+<h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><p>堆排序的实现基础是在二叉堆上完成的。</p>
+<h4 id="二叉堆"><a href="#二叉堆" class="headerlink" title="二叉堆"></a>二叉堆</h4><p>二叉堆是一种完全（或近似）二叉树。其两个子结点一定大于（小于）或等于父结点。大于或小于取决于是最大堆还是最小堆。</p>
+<ul>
+<li>在一个父节点为k的位置，其子结点为2k 和2k+1。</li>
+</ul>
+<p>利用这个性质，在二叉堆中上下移动只需要将k/2或k=2*k即可。</p>
+<p><img src="http://pdjydlit1.bkt.clouddn.com/heap-representations.png" alt="二叉堆结构"></p>
+<p>这里的实现我们是以数组为基础的数据结构实现的。</p>
+<p>因为无法完成上下移动，所以<strong>数组第0个位置是不存放数据以及使用的！</strong></p>
+<p>在之后的操作中，我们以最大堆为例子。（最小堆仅仅是比较大小的方向不同）</p>
+<h4 id="堆的基础算法"><a href="#堆的基础算法" class="headerlink" title="堆的基础算法"></a>堆的基础算法</h4><p>在对堆进行添加删除操作时，需要对堆进行恢复，此时需要借助两个辅助操作。</p>
+<ul>
+<li>如果此时某个结点的优先级上升，则此时需要从下至上恢复堆——上浮 swim</li>
+<li>如果此时某个结点的优先级下降，则此时需要从上至下恢复堆——下沉 sink</li>
+</ul>
+<h5 id="上浮-swim"><a href="#上浮-swim" class="headerlink" title="上浮 swim"></a>上浮 swim</h5><p>如果某个子结点比其父结点优先级更高，则此时需要子结点中优先级最高的与其父结点交换，进行上浮，直至到合适位置（堆顶或不再更大）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swim</span><span class="params">(Comparable[] a, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (k &gt; <span class="number">1</span> &amp;&amp; less(a, k / <span class="number">2</span>, k)) &#123;</span><br><span class="line">        exchange(a, k / <span class="number">2</span>, k);</span><br><span class="line">        k /= <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="下沉-sink"><a href="#下沉-sink" class="headerlink" title="下沉 sink"></a>下沉 sink</h5><p>如果某个父结点比其子结点优先级更低，则此时需要父结点与子节点中优先级最高的交换，进行下沉，直至到合适位置（堆底部或不再更小）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(Comparable[] a, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (k * <span class="number">2</span> &lt;= a.length - <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> j = k * <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (j &lt; a.length - <span class="number">1</span> &amp;&amp; less(a, j, j + <span class="number">1</span>)) j++;</span><br><span class="line">        <span class="keyword">if</span> (!less(a, k, j)) <span class="keyword">break</span>;</span><br><span class="line">        k = j;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="堆排序实现"><a href="#堆排序实现" class="headerlink" title="堆排序实现"></a>堆排序实现</h4><p>堆排序的实现分为两步：</p>
+<ul>
+<li>构造堆序列</li>
+<li>通过下沉操作不断的返回堆顶值（最大/小值）至数组末尾，形成有序数列。</li>
+</ul>
+<blockquote>
+<p>给定一个数组，将其排序为堆排序，则是构造堆。<br>此过程中，可以用上浮和下沉实现。但是<strong>下沉操作仅需2N次比较以及小于N次交换</strong>。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MaxHeapSort</span> <span class="keyword">extends</span> <span class="title">BaseSort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparable[] a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> N = a.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = N / <span class="number">2</span>; k &gt;= <span class="number">1</span>; k--)</span><br><span class="line">            sink(a, k);</span><br><span class="line">        <span class="keyword">while</span> (N &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            exchange(a, <span class="number">1</span>, N--);</span><br><span class="line">            sink(a, <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swim</span><span class="params">(Comparable[] a, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        ···</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(Comparable[] a, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        ···</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>性能：堆排序可以达到稳定的<strong>NlogN</strong>开销和恒定的额外空间。<br>劣势：对于一些空间紧张的情况而言，可以很简洁的实现较好的性能。但是在现代操作系统中使用较少，因为其无法利用缓存。这是其相对于快速排序、希尔排序、归并排序的劣势。<br>通过堆实现的优先队列非常重要，因为其能很好的将插入和删除最大（最小）元素的操作保证对数级开销。</p>
+</blockquote>
+<p><em>可以通过先下沉后上浮的方式，优化算法，减少接近一半的比较次数，但是会损失额外的空间。</em></p>
+<h3 id="优先队列"><a href="#优先队列" class="headerlink" title="优先队列"></a>优先队列</h3><blockquote>
+<p>优先队列是基于堆的完全二叉树表示</p>
+</blockquote>
+<p>其将数据存储于<code>pq[1...N]</code>中，<code>pq[0]</code>未使用。</p>
+<ul>
+<li>构造器可以传入数组或Collection作为参数，只需将其按照堆构造方法自底向上依次进行下沉即可。</li>
+</ul>
+<h4 id="基础方法"><a href="#基础方法" class="headerlink" title="基础方法"></a>基础方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//表示优先级更高的比较，这里允许传入自定义的比较器修改优先级，默认最小优先队列</span></span><br><span class="line">      <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">greater</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">          <span class="keyword">if</span> (comparator == <span class="keyword">null</span>) <span class="keyword">return</span> pq[i].compareTo(pq[j]) &lt; <span class="number">0</span>;</span><br><span class="line">          <span class="keyword">return</span> comparator.compare(pq[i], pq[j]) &lt; <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">exchange</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">          Key temp = pq[i];</span><br><span class="line">          pq[i] = pq[j];</span><br><span class="line">          pq[j] = temp;</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">resize</span><span class="params">(<span class="keyword">int</span> capacity)</span> </span>&#123;</span><br><span class="line">          Key[] copy = (Key[]) <span class="keyword">new</span> Object[capacity];</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N; i++) &#123;</span><br><span class="line">              copy[i] = pq[i];</span><br><span class="line">          &#125;</span><br><span class="line">          pq = copy;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>同样排序也需要下沉和上浮的操作进行辅助。实现和堆排序中类似，键值<code>key</code>实现了<code>Comparable</code>接口，使用一个<code>pq</code>数组维护，N表示真实数组填充的数据。</p>
+<h4 id="上浮-swim-1"><a href="#上浮-swim-1" class="headerlink" title="上浮 swim"></a>上浮 swim</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swim</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (k &gt; <span class="number">1</span> &amp;&amp; greater(k, k / <span class="number">2</span>)) &#123;</span><br><span class="line">        exchange(k, k / <span class="number">2</span>);</span><br><span class="line">        k /= <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="下沉-sink-1"><a href="#下沉-sink-1" class="headerlink" title="下沉 sink"></a>下沉 sink</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (k * <span class="number">2</span> &gt;= N) &#123;</span><br><span class="line">        <span class="keyword">int</span> j = k * <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (j &lt; N - <span class="number">1</span> &amp;&amp; greater(j + <span class="number">1</span>, j)) j++;</span><br><span class="line">        <span class="keyword">if</span> (!greater(j, k)) <span class="keyword">break</span>;</span><br><span class="line">        exchange(k, j);</span><br><span class="line">        k = j;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="添加-insert"><a href="#添加-insert" class="headerlink" title="添加 insert"></a>添加 insert</h4><p>只需将要添加的元素放入队尾，然后上浮到合适位置即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(Key key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (N == pq.length - <span class="number">1</span>) resize(pq.length * <span class="number">2</span>);</span><br><span class="line">    pq[++N] = key;</span><br><span class="line">    swim(N);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="删除最小值（优先级最高）"><a href="#删除最小值（优先级最高）" class="headerlink" title="删除最小值（优先级最高）"></a>删除最小值（优先级最高）</h4><p>将队列的最小值即数组的第1位返回，并与最后一位交换（置空），将新的首位元素下沉至合适位置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Key <span class="title">deletMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Key min = pq[<span class="number">1</span>];</span><br><span class="line">    exchange(<span class="number">1</span>, N--);</span><br><span class="line">    sink(<span class="number">1</span>);</span><br><span class="line">    pq[N + <span class="number">1</span>] = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (N == (pq.length - <span class="number">1</span>) / <span class="number">4</span>) resize(pq.length / <span class="number">2</span>);</span><br><span class="line">    <span class="keyword">return</span> min;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="完整代码实现"><a href="#完整代码实现" class="headerlink" title="完整代码实现"></a>完整代码实现</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PriorityQueue</span>&lt;<span class="title">Key</span> <span class="keyword">extends</span> <span class="title">Comparable</span>&lt;<span class="title">Key</span>&gt;&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Key[] pq;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> N;</span><br><span class="line">    <span class="keyword">private</span> Comparator&lt;? <span class="keyword">super</span> Key&gt; comparator;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PriorityQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(<span class="number">10</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PriorityQueue</span><span class="params">(<span class="keyword">int</span> maxN)</span> </span>&#123;</span><br><span class="line">        N = <span class="number">0</span>;</span><br><span class="line">        pq = (Key[]) <span class="keyword">new</span> Object[maxN + <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PriorityQueue</span><span class="params">(Comparator&lt;? <span class="keyword">super</span> Key&gt; comparator)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(<span class="number">10</span>, comparator);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PriorityQueue</span><span class="params">(<span class="keyword">int</span> maxN, Comparator&lt;? <span class="keyword">super</span> Key&gt; comparator)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(maxN);</span><br><span class="line">        <span class="keyword">this</span>.comparator = comparator;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setComparator</span><span class="params">(Comparator&lt;? <span class="keyword">super</span> Key&gt; comparator)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.comparator = comparator;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(Key key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (N == pq.length - <span class="number">1</span>) resize(pq.length * <span class="number">2</span>);</span><br><span class="line">        pq[++N] = key;</span><br><span class="line">        swim(N);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Key <span class="title">deletMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Key min = pq[<span class="number">1</span>];</span><br><span class="line">        exchange(<span class="number">1</span>, N--);</span><br><span class="line">        sink(<span class="number">1</span>);</span><br><span class="line">        pq[N + <span class="number">1</span>] = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (N == (pq.length - <span class="number">1</span>) / <span class="number">4</span>) resize(pq.length / <span class="number">2</span>);</span><br><span class="line">        <span class="keyword">return</span> min;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> N;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> N == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swim</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (k &gt; <span class="number">1</span> &amp;&amp; greater(k, k / <span class="number">2</span>)) &#123;</span><br><span class="line">            exchange(k, k / <span class="number">2</span>);</span><br><span class="line">            k /= <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (k * <span class="number">2</span> &gt;= N) &#123;</span><br><span class="line">            <span class="keyword">int</span> j = k * <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span> (j &lt; N - <span class="number">1</span> &amp;&amp; greater(j + <span class="number">1</span>, j)) j++;</span><br><span class="line">            <span class="keyword">if</span> (!greater(j, k)) <span class="keyword">break</span>;</span><br><span class="line">            exchange(k, j);</span><br><span class="line">            k = j;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">greater</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (comparator == <span class="keyword">null</span>) <span class="keyword">return</span> pq[i].compareTo(pq[j]) &lt; <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> comparator.compare(pq[i], pq[j]) &lt; <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">exchange</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">        Key temp = pq[i];</span><br><span class="line">        pq[i] = pq[j];</span><br><span class="line">        pq[j] = temp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">resize</span><span class="params">(<span class="keyword">int</span> capacity)</span> </span>&#123;</span><br><span class="line">        Key[] copy = (Key[]) <span class="keyword">new</span> Object[capacity];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= N; i++) &#123;</span><br><span class="line">            copy[i] = pq[i];</span><br><span class="line">        &#125;</span><br><span class="line">        pq = copy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h4><ul>
+<li><strong>增加、删除操作均在logN级别内。</strong></li>
+</ul>
+<h3 id="索引优先队列"><a href="#索引优先队列" class="headerlink" title="索引优先队列"></a>索引优先队列</h3><p>在实现优先队列的基础之上，可以额外维护一个逆序数组<code>qp[]</code>使其能快速访问队列中任意元素（键值<code>key</code>）。</p>
+<p>其中<code>qp[pq[i]] = pq[qp[i]] = key</code>。</p>
+<blockquote>
+<p>为了能够快速找到<code>pq[]</code>中元素值对应的下标，我们需要额外设置一个数组<code>qp[]</code>，它的作用是存储与对象相关的整数在<code>pq[]</code>数组中的下标，并在上浮和下沉的过程中同时维护它。</p>
+</blockquote>
+<p><img src="http://pdjydlit1.bkt.clouddn.com/IndexPQ.jpg" alt="索引优先队列结构"></p>
+<h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><p>与优先队列不同的是，这里采用整数数组<code>pq[]</code>维护索引下标以及其堆的顺序，用<code>pq[]</code>维护元素与索引对应的位置关系，用额外的<code>keys[]</code>维护元素队列，<code>keys</code>中的数据位置不做改变。</p>
+<ul>
+<li>将<code>qp[]</code>初始化为-1，可以快速判断某位置是否包含元素。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IndexPriorityQueue</span>&lt;<span class="title">Key</span> <span class="keyword">extends</span> <span class="title">Comparable</span>&lt;<span class="title">Key</span>&gt;&gt; </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span>[] pq;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span>[] qp;</span><br><span class="line">        <span class="keyword">private</span> Key[] keys;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> N;</span><br><span class="line">        <span class="keyword">private</span> Comparator&lt;? <span class="keyword">super</span> Key&gt; comparator;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">IndexPriorityQueue</span><span class="params">(<span class="keyword">int</span> maxN)</span> </span>&#123;</span><br><span class="line">            N = <span class="number">0</span>;</span><br><span class="line">            pq = <span class="keyword">new</span> <span class="keyword">int</span>[maxN + <span class="number">1</span>];</span><br><span class="line">            qp = <span class="keyword">new</span> <span class="keyword">int</span>[maxN + <span class="number">1</span>];</span><br><span class="line">            keys = (Key[]) <span class="keyword">new</span> Object[maxN + <span class="number">1</span>];</span><br><span class="line">	        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pq.length; i++) &#123;</span><br><span class="line">	            pq[i] = -<span class="number">1</span>;</span><br><span class="line">	            qp[i] = -<span class="number">1</span>;</span><br><span class="line">	        &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">greater</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (comparator == <span class="keyword">null</span>) <span class="keyword">return</span> keys[pq[i]].compareTo(keys[pq[j]]) &lt; <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">return</span> comparator.compare(keys[pq[i]], keys[pq[j]]) &lt; <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">exchange</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">int</span> temp = pq[i];</span><br><span class="line">            pq[i] = pq[j];</span><br><span class="line">            pq[j] = temp;</span><br><span class="line">            qp[pq[i]] = i;</span><br><span class="line">            qp[pq[j]] = j;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> qp[k] != -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ···</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="上浮和下沉"><a href="#上浮和下沉" class="headerlink" title="上浮和下沉"></a>上浮和下沉</h4><p>上浮和下沉操作与优先队列相同。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swim</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (k &gt; <span class="number">1</span> &amp;&amp; greater(k, k / <span class="number">2</span>)) &#123;</span><br><span class="line">        exchange(k, k / <span class="number">2</span>);</span><br><span class="line">        k /= <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (k * <span class="number">2</span> &gt;= N) &#123;</span><br><span class="line">        <span class="keyword">int</span> j = k * <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (j &lt; N - <span class="number">1</span> &amp;&amp; greater(j + <span class="number">1</span>, j)) j++;</span><br><span class="line">        <span class="keyword">if</span> (!greater(j, k)) <span class="keyword">break</span>;</span><br><span class="line">        exchange(k, j);</span><br><span class="line">        k = j;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="改变-change"><a href="#改变-change" class="headerlink" title="改变 change"></a>改变 change</h4><p>改变优先队列中索引的值。（注意<code>keys</code>中的数据位置并未改变）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">change</span><span class="params">(<span class="keyword">int</span> k, Key key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!contains(k)) <span class="keyword">return</span>;</span><br><span class="line">    keys[k] = key;</span><br><span class="line">    swim(qp[k]);</span><br><span class="line">    sink(qp[k]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="插入-insert"><a href="#插入-insert" class="headerlink" title="插入 insert"></a>插入 insert</h4><p>插入数据的同时，要维护<code>qp[]</code>数组。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> k, Key key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (contains(k)) change(k, key);</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        ++N;</span><br><span class="line">        pq[N] = k;</span><br><span class="line">        pq[k] = N;</span><br><span class="line">        keys[k] = key;</span><br><span class="line">        swim(k);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="最小值-min"><a href="#最小值-min" class="headerlink" title="最小值 min"></a>最小值 min</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Key <span class="title">min</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> keys[pq[<span class="number">1</span>]];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="删除最小值并返回索引（优先级最高）"><a href="#删除最小值并返回索引（优先级最高）" class="headerlink" title="删除最小值并返回索引（优先级最高）"></a>删除最小值并返回索引（优先级最高）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">deletMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (isEmpty()) <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">    <span class="keyword">int</span> min = pq[<span class="number">1</span>];</span><br><span class="line">    exchange(<span class="number">1</span>, N--);</span><br><span class="line">    sink(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span> min== pq[N+<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">    pq[N + <span class="number">1</span>] = -<span class="number">1</span>;</span><br><span class="line">    qp[min] = -<span class="number">1</span>;</span><br><span class="line">    keys[min] = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">return</span> min;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="删除-delete"><a href="#删除-delete" class="headerlink" title="删除 delete"></a>删除 delete</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Key <span class="title">delete</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!contains(k)) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">int</span> index = qp[k];</span><br><span class="line">    Key del = keys[k];</span><br><span class="line">    exchange(index, N--);</span><br><span class="line">    swim(index);</span><br><span class="line">    sink(index);</span><br><span class="line">    pq[N + <span class="number">1</span>] = -<span class="number">1</span>;</span><br><span class="line">    qp[k] = -<span class="number">1</span>;</span><br><span class="line">    keys[k] = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">return</span> del;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="完整代码实现-1"><a href="#完整代码实现-1" class="headerlink" title="完整代码实现"></a>完整代码实现</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IndexPriorityQueue</span>&lt;<span class="title">Key</span> <span class="keyword">extends</span> <span class="title">Comparable</span>&lt;<span class="title">Key</span>&gt;&gt; <span class="keyword">implements</span> <span class="title">Iterable</span>&lt;<span class="title">Integer</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] pq;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] qp;</span><br><span class="line">    <span class="keyword">private</span> Key[] keys;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> N;</span><br><span class="line">    <span class="keyword">private</span> Comparator&lt;? <span class="keyword">super</span> Key&gt; comparator;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IndexPriorityQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(<span class="number">10</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IndexPriorityQueue</span><span class="params">(<span class="keyword">int</span> maxN)</span> </span>&#123;</span><br><span class="line">        N = <span class="number">0</span>;</span><br><span class="line">        pq = <span class="keyword">new</span> <span class="keyword">int</span>[maxN + <span class="number">1</span>];</span><br><span class="line">        qp = <span class="keyword">new</span> <span class="keyword">int</span>[maxN + <span class="number">1</span>];</span><br><span class="line">        keys = (Key[]) <span class="keyword">new</span> Object[maxN + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; qp.length; i++) qp[i] = -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IndexPriorityQueue</span><span class="params">(Comparator&lt;? <span class="keyword">super</span> Key&gt; comparator)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(<span class="number">10</span>, comparator);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IndexPriorityQueue</span><span class="params">(<span class="keyword">int</span> maxN, Comparator&lt;? <span class="keyword">super</span> Key&gt; comparator)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(maxN);</span><br><span class="line">        <span class="keyword">this</span>.comparator = comparator;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setComparator</span><span class="params">(Comparator&lt;? <span class="keyword">super</span> Key&gt; comparator)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.comparator = comparator;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">greater</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (comparator == <span class="keyword">null</span>) <span class="keyword">return</span> keys[pq[i]].compareTo(keys[pq[j]]) &lt; <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> comparator.compare(keys[pq[i]], keys[pq[j]]) &lt; <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">exchange</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> temp = pq[i];</span><br><span class="line">        pq[i] = pq[j];</span><br><span class="line">        pq[j] = temp;</span><br><span class="line">        qp[pq[i]] = i;</span><br><span class="line">        qp[pq[j]] = j;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> qp[k] != -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swim</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (k &gt; <span class="number">1</span> &amp;&amp; greater(k, k / <span class="number">2</span>)) &#123;</span><br><span class="line">            exchange(k, k / <span class="number">2</span>);</span><br><span class="line">            k /= <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (k * <span class="number">2</span> &gt;= N) &#123;</span><br><span class="line">            <span class="keyword">int</span> j = k * <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span> (j &lt; N - <span class="number">1</span> &amp;&amp; greater(j + <span class="number">1</span>, j)) j++;</span><br><span class="line">            <span class="keyword">if</span> (!greater(j, k)) <span class="keyword">break</span>;</span><br><span class="line">            exchange(k, j);</span><br><span class="line">            k = j;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">change</span><span class="params">(<span class="keyword">int</span> k, Key key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!contains(k)) <span class="keyword">return</span>;</span><br><span class="line">        keys[k] = key;</span><br><span class="line">        swim(qp[k]);</span><br><span class="line">        sink(qp[k]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> k, Key key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (contains(k)) change(k, key);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            ++N;</span><br><span class="line">            pq[N] = k;</span><br><span class="line">            pq[k] = N;</span><br><span class="line">            keys[k] = key;</span><br><span class="line">            swim(k);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Key <span class="title">min</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> keys[pq[<span class="number">1</span>]];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minIndex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> pq[<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">deletMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isEmpty()) <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">        <span class="keyword">int</span> min = pq[<span class="number">1</span>];</span><br><span class="line">        exchange(<span class="number">1</span>, N--);</span><br><span class="line">        sink(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">assert</span> min == pq[N + <span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">        pq[N + <span class="number">1</span>] = -<span class="number">1</span>;</span><br><span class="line">        qp[min] = -<span class="number">1</span>;</span><br><span class="line">        keys[min] = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">return</span> min;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Key <span class="title">delete</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!contains(k)) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> index = qp[k];</span><br><span class="line">        Key del = keys[k];</span><br><span class="line">        exchange(index, N--);</span><br><span class="line">        swim(index);</span><br><span class="line">        sink(index);</span><br><span class="line">        pq[N + <span class="number">1</span>] = -<span class="number">1</span>;</span><br><span class="line">        qp[k] = -<span class="number">1</span>;</span><br><span class="line">        keys[k] = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">return</span> del;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> N;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> N == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterator&lt;Integer&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> IndexPQIterator();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">IndexPQIterator</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">Integer</span>&gt; </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> IndexPriorityQueue&lt;Key&gt; copy;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">IndexPQIterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            copy = <span class="keyword">new</span> IndexPriorityQueue&lt;&gt;(pq.length - <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; N; i++)</span><br><span class="line">                copy.insert(pq[i], keys[pq[i]]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> !copy.isEmpty();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Integer <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (!hasNext()) <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">            <span class="keyword">return</span> copy.deletMin();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/09/29/BaseSort/">排序算法——基于比较的算法</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
+        <p><span>发布时间:</span>2018-09-29, 18:52:28</p>
+        <p><span>最后更新:</span>2020-09-12, 16:12:15</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/09/29/BaseSort/" title="排序算法——基于比较的算法">http://yif-hong.github.io/2018/09/29/BaseSort/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yif-hong.github.io/2018/09/29/BaseSort/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/09/19/java-constructor/">
+                    当我们谈论Java构造器时，我们在讨论什么？
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AC%E5%85%B1%E6%96%B9%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">公共方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F"><span class="toc-number">2.</span> <span class="toc-text">选择排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F"><span class="toc-number">3.</span> <span class="toc-text">插入排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F"><span class="toc-number">4.</span> <span class="toc-text">希尔排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F"><span class="toc-number">5.</span> <span class="toc-text">归并排序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%88%E5%B9%B6"><span class="toc-number">5.1.</span> <span class="toc-text">合并</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E9%A1%B6%E5%90%91%E4%B8%8B%E7%9A%84%E5%BD%92%E5%B9%B6"><span class="toc-number">5.2.</span> <span class="toc-text">自顶向下的归并</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%BA%95%E5%90%91%E4%B8%8A%E7%9A%84%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F"><span class="toc-number">5.3.</span> <span class="toc-text">自底向上的归并排序</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F"><span class="toc-number">6.</span> <span class="toc-text">快速排序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%87%E5%88%86-partition"><span class="toc-number">6.1.</span> <span class="toc-text">切分 partition</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96"><span class="toc-number">6.2.</span> <span class="toc-text">快速排序优化</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B0%8F%E6%95%B0%E7%BB%84%E4%BD%BF%E7%94%A8%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F"><span class="toc-number">6.2.1.</span> <span class="toc-text">小数组使用插入排序</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%89%E5%90%91%E5%88%87%E5%88%86%E4%BC%98%E5%8C%96%E9%87%8D%E5%A4%8D%E6%95%B0%E7%BB%84%E7%9A%84%E6%80%A7%E8%83%BD"><span class="toc-number">6.2.2.</span> <span class="toc-text">三向切分优化重复数组的性能</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A0%86%E6%8E%92%E5%BA%8F"><span class="toc-number">7.</span> <span class="toc-text">堆排序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8C%E5%8F%89%E5%A0%86"><span class="toc-number">7.1.</span> <span class="toc-text">二叉堆</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A0%86%E7%9A%84%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95"><span class="toc-number">7.2.</span> <span class="toc-text">堆的基础算法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%8A%E6%B5%AE-swim"><span class="toc-number">7.2.1.</span> <span class="toc-text">上浮 swim</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%8B%E6%B2%89-sink"><span class="toc-number">7.2.2.</span> <span class="toc-text">下沉 sink</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A0%86%E6%8E%92%E5%BA%8F%E5%AE%9E%E7%8E%B0"><span class="toc-number">7.3.</span> <span class="toc-text">堆排序实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97"><span class="toc-number">8.</span> <span class="toc-text">优先队列</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E6%96%B9%E6%B3%95"><span class="toc-number">8.1.</span> <span class="toc-text">基础方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8A%E6%B5%AE-swim-1"><span class="toc-number">8.2.</span> <span class="toc-text">上浮 swim</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8B%E6%B2%89-sink-1"><span class="toc-number">8.3.</span> <span class="toc-text">下沉 sink</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0-insert"><span class="toc-number">8.4.</span> <span class="toc-text">添加 insert</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%9C%80%E5%B0%8F%E5%80%BC%EF%BC%88%E4%BC%98%E5%85%88%E7%BA%A7%E6%9C%80%E9%AB%98%EF%BC%89"><span class="toc-number">8.5.</span> <span class="toc-text">删除最小值（优先级最高）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-number">8.6.</span> <span class="toc-text">完整代码实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD"><span class="toc-number">8.7.</span> <span class="toc-text">性能</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97"><span class="toc-number">9.</span> <span class="toc-text">索引优先队列</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">9.1.</span> <span class="toc-text">初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8A%E6%B5%AE%E5%92%8C%E4%B8%8B%E6%B2%89"><span class="toc-number">9.2.</span> <span class="toc-text">上浮和下沉</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%94%B9%E5%8F%98-change"><span class="toc-number">9.3.</span> <span class="toc-text">改变 change</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%92%E5%85%A5-insert"><span class="toc-number">9.4.</span> <span class="toc-text">插入 insert</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%80%E5%B0%8F%E5%80%BC-min"><span class="toc-number">9.5.</span> <span class="toc-text">最小值 min</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%9C%80%E5%B0%8F%E5%80%BC%E5%B9%B6%E8%BF%94%E5%9B%9E%E7%B4%A2%E5%BC%95%EF%BC%88%E4%BC%98%E5%85%88%E7%BA%A7%E6%9C%80%E9%AB%98%EF%BC%89"><span class="toc-number">9.6.</span> <span class="toc-text">删除最小值并返回索引（优先级最高）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4-delete"><span class="toc-number">9.7.</span> <span class="toc-text">删除 delete</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0-1"><span class="toc-number">9.8.</span> <span class="toc-text">完整代码实现</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"排序算法——基于比较的算法　| Yif　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+        <div class="addthis_sharing_toolbox"></div>
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'http://yif-hong.github.io/2018/09/29/BaseSort/';
+            this.page.identifier = '2018/09/29/BaseSort/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//yifhong.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/09/19/java-constructor/" title="下一篇: 当我们谈论Java构造器时，我们在讨论什么？">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/09/29/BaseSort/">排序算法——基于比较的算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/19/java-constructor/">当我们谈论Java构造器时，我们在讨论什么？</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/11/Volatile/">Volatile关键字解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-SP/">图论——最短路径</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-MST/">图论——最小生成树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-Topological/">图论——拓扑排序</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/Graph-general/">图论——基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/LeetcodeExercise/">Leetcode刷题记录（日更）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/HashTable/">散列表</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/RedBlackBST/">红黑树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/BST/">二叉树</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018-2020 Yif Hong
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-129136937-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

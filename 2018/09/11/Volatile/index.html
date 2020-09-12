@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Yif Hong" />
+
+
+
+<meta name="description" content="本文参考来源 海子的博客  volatile在Java 5之前一直是个备受争议的关键字，直到Java 5之后才焕发新机。虽然volatile的含义如此简洁，但是深入理解它则需要了解Java的内存模型。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Volatile关键字解析">
+<meta property="og:url" content="http://yif-hong.github.io/2018/09/11/Volatile/index.html">
+<meta property="og:site_name" content="Yif">
+<meta property="og:description" content="本文参考来源 海子的博客  volatile在Java 5之前一直是个备受争议的关键字，直到Java 5之后才焕发新机。虽然volatile的含义如此简洁，但是深入理解它则需要了解Java的内存模型。">
+<meta property="og:locale">
+<meta property="og:image" content="http://www.elecfans.com/uploads/allimg/170526/2474217-1F526110253129.jpg">
+<meta property="og:image" content="http://pevzgedd6.bkt.clouddn.com/212219343783699.jpg">
+<meta property="article:published_time" content="2018-09-11T09:47:09.000Z">
+<meta property="article:modified_time" content="2020-09-12T08:12:15.280Z">
+<meta property="article:author" content="Yif Hong">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="JVM">
+<meta property="article:tag" content="Concurrency">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.elecfans.com/uploads/allimg/170526/2474217-1F526110253129.jpg">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Yif" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Volatile关键字解析 | Yif</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bea9f3e6e421e5"></script>
+
+
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/"></a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:yifhongrui@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" rel="noopener" href="https://weibo.com/u/3852481088" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" rel="noopener" href="https://github.com/yif-hong" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" rel="noopener" href="https://www.zhihu.com/people/hong-yifeng-7" title="知乎"></a>
+                            
+                                <a class="fa 简书" target="_blank" rel="noopener" href="https://www.jianshu.com/u/b256468d0120" title="简书"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" rel="noopener" href="https://music.163.com/#/user/home?id=57389967" title="网易云音乐"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/" rel="tag">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/" rel="tag">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://github.com/yif-hong">GitHub</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Alone</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页"></a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页"></a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:yifhongrui@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/u/3852481088" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/yif-hong" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/people/hong-yifeng-7" title="知乎"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="https://www.jianshu.com/u/b256468d0120" title="简书"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="https://music.163.com/#/user/home?id=57389967" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Volatile" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/09/11/Volatile/" class="article-date">
+      <time datetime="2018-09-11T09:47:09.000Z" itemprop="datePublished">2018-09-11</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Volatile关键字解析
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Concurrency/" rel="tag">Concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <blockquote>
+<p>本文参考来源 <a target="_blank" rel="noopener" href="http://www.cnblogs.com/dolphin0520/p/3920373.html">海子的博客</a></p>
+</blockquote>
+<p>volatile在Java 5之前一直是个备受争议的关键字，直到Java 5之后才焕发新机。虽然volatile的含义如此简洁，但是深入理解它则需要了解Java的内存模型。</p>
+<a id="more"></a>
+
+<h2 id="内存模型"><a href="#内存模型" class="headerlink" title="内存模型"></a>内存模型</h2><h3 id="高速缓存"><a href="#高速缓存" class="headerlink" title="高速缓存"></a>高速缓存</h3><p>在计算机中，执行程序时每条指令都是最终在CPU执行的，而指令在执行过程中，必然会和数据的读取和写入相关。由于程序运行时的临时数据是储存在主内存（RAM物理内存）中的，CPU的执行速度很快，而从内存中读取和写入相对CPU速度慢的多，于是CPU就有自己的存储结构——高速缓存。</p>
+<blockquote>
+<p>CPU一般的结构由控制单元、执行单元、存储单元组成。</p>
+</blockquote>
+<p><img src="http://www.elecfans.com/uploads/allimg/170526/2474217-1F526110253129.jpg" alt="CPU结构"></p>
+<p>也就是说，在程序运行的过程中，CPU运算所需的数据需要从主存中复制一份到高速缓存中，然后通过读取-计算-写入，CPU完成计算写入后再将数据刷新到主存中。举个例子：</p>
+<p><code>int i = i + 1;</code></p>
+<p>当线程执行这段代码时，会先从主存中读取i的值，复制一份到高速缓存中，然后CPU执行对i+1的操作，再将数据写入高速缓存，最后将高速缓存中的i的值刷新到主存中。</p>
+<p>在这个过程中，如果是单线程执行是没有问题的，但是在多线程中，会出现 <strong>缓存不一致</strong> 的问题。</p>
+<h3 id="缓存不一致"><a href="#缓存不一致" class="headerlink" title="缓存不一致"></a>缓存不一致</h3><p>在多核心CPU中，每个线程独立运行于自己的CPU中，因此线程都会有属于自己的高速缓存。对于单核CPU而言，也会有这个问题，通过线程调度执行产生。这边以多核CPU为例：</p>
+<p><code>int i = i + 1;</code></p>
+<p>比如有2个线程同时执行这段代码，初始值为0，希望结果是i=2。大多数情况下是OK的，但是可能也会出现这种情况：初始时，两个线程分别将i的值从主存读取复制到各自的高速缓存中，然后线程1进行+1操作，i为1写入高速缓存并刷新内存，此时线程2的高速缓存仍然是0，进行+1操作后，i为1同样写入高速缓存并刷新内存。出现了最终结果是1而不是2的问题。</p>
+<blockquote>
+<p>通常这样多个线程访问的变量被称为共享变量。</p>
+</blockquote>
+<p>为了解决缓存不一致的问题，一般有以下两个方法：</p>
+<ol>
+<li>通过在总线加LOCK#锁。</li>
+<li>通过缓存一致性协议。</li>
+</ol>
+<ul>
+<li>以上都是在硬件层面解决问题。</li>
+</ul>
+<p>早期是通过在总线加LOCK#锁解决缓存不一致的问题。因为CPU和外部的通信是通过总线进行的，于是加锁则能保证同步一致，阻塞了其他CPU对部件通信（访问内存），虽然可以解决，但是效率太低了，因为访问其他部件的操作相对CPU的执行速度而言效率太低。于是就出现了缓存一致性协议。</p>
+<blockquote>
+<p><strong>缓存一致性协议</strong>：最出名的就是Intel 的MESI协议，MESI协议保证了每个缓存中使用的共享变量的副本是一致的。<br>它核心的思想是：当CPU写数据时，如果发现操作的变量是共享变量，即在其他CPU中也存在该变量的副本，会发出信号通知其他CPU将该变量的缓存行置为 <strong>无效状态</strong> ，因此当其他CPU需要读取这个变量时，发现自己缓存中缓存该变量的缓存行是无效的，那么它就会从内存重新读取。</p>
+</blockquote>
+<p><img src="http://pevzgedd6.bkt.clouddn.com/212219343783699.jpg" alt="缓存一致性协议"></p>
+<h2 id="并发编程"><a href="#并发编程" class="headerlink" title="并发编程"></a>并发编程</h2><blockquote>
+<p>并发编程中，经常要解决以下问题：原子性问题、可见性问题、有序性问题。</p>
+</blockquote>
+<h3 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h3><ul>
+<li>原子性是指一个操作或多个操作，要么全部执行并且不会被打断，要么不执行。</li>
+</ul>
+<p>反应这个概念最简单的模型就是“转账取款”的问题。</p>
+<p>如果反映到并发编程中，以java举例，<code>i = 999;</code>，i是int为32位，赋值过程中，前16位写入后，中断，此时另一个线程读取i，则值会错乱。</p>
+<h3 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h3><ul>
+<li>可见性是指当多个线程访问同一个变量时，一个线程修改了这个变量的值，其他线程能够立即看得见修改后的值。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//thread 1</span></span><br><span class="line"><span class="keyword">int</span> i = <span class="number">0</span>;    <span class="comment">//语句1</span></span><br><span class="line">i = <span class="number">10</span>;       <span class="comment">//语句2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//thread 2</span></span><br><span class="line"><span class="keyword">int</span> j = i;</span><br></pre></td></tr></table></figure>
+<p>假若线程1是CPU1，线程2是CPU2，当线程1执行到语句2时，此时CPU1高速缓存变为10，但是未刷新到主存中。则此时线程2执行，读取主存中的i仍然是0，使得j也变为0，出错。</p>
+<p>可见性问题是在线程1修改变量后，线程2没有立刻看到线程1中的值。</p>
+<h3 id="有序性"><a href="#有序性" class="headerlink" title="有序性"></a>有序性</h3><ul>
+<li>有序性是指程序执行的顺序按照代码的先后顺序执行。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i = <span class="number">0</span>;   <span class="comment">//语句1</span></span><br><span class="line"><span class="keyword">int</span> j = <span class="number">1</span>;   <span class="comment">//语句2</span></span><br><span class="line">i = i + <span class="number">1</span>;   <span class="comment">//语句3</span></span><br><span class="line">j = j + i;   <span class="comment">//语句4</span></span><br></pre></td></tr></table></figure>
+
+<p>按照正常的程序执行顺序，应该是1234顺序执行语句指令，但是在JVM中，会对指令优化处理，发生 <strong>指令重排</strong> ，顺序可能变为2134。</p>
+<p>虽然指令重排会使程序执行顺序发生变化，但是还是会有依赖顺序，不会出现语句4在语句3(或语句2）之前执行。因为在执行语句时，类似拓扑排序，会检查调用到的其他参数，保证其他参数执行完毕返回结果后，才会执行此语句。</p>
+<p>对于单线程而言，不会产生问题。但是对于多线程，则会出现问题。比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//thread1</span></span><br><span class="line">Context context = getContext(); <span class="comment">//语句1</span></span><br><span class="line"><span class="keyword">boolean</span> init = <span class="keyword">true</span>;            <span class="comment">//语句2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//thread2</span></span><br><span class="line"><span class="keyword">while</span>(!init) sleep();           <span class="comment">//语句3</span></span><br><span class="line">doSomething(context);           <span class="comment">//语句4</span></span><br></pre></td></tr></table></figure>
+
+<p>此时语句1语句2无依赖关系，则线程1中，很有可能会语句2先于语句1执行，此时线程2则会错误的认为context已经初始化ok，然后跳出循环执行语句4,实际context要在语句2才执行，进而导致异常。</p>
+<p>因此可以看出，JVM指令重排对于单线程没有影响，但是多线程会导致可能出现错误。</p>
+<blockquote>
+<p>在并发编程中,若未保证以上三原则中的任何一个，都会产生不可预知的问题。</p>
+</blockquote>
+<h2 id="Java内存模型"><a href="#Java内存模型" class="headerlink" title="Java内存模型"></a>Java内存模型</h2><p>在JVM虚拟机中，试图定义一种Java内存模型(Java Memory Model,JMM)，以此解决跨硬件和不同操作系统上的内存访问差异，完善跨平台性。其中，JMM主要定义了程序中访问变量的访问规则，即程序的执行顺序（有序性）。</p>
+<p>但是，为了更好的性能，JMM并没有禁止指令重排,也没有限制CPU在指令的处理上使用寄存器和高速缓存。所以，JMM也会产生缓存一致性问题和指令重排的问题。</p>
+<p>JMM规定所有变量都是存在于主存中（物理内存），所有线程都有自己的工作内存（类似CPU的高速缓存），线程对变量的操作必须在工作内存中完成，无法直接对主存操作，并且不能访问其他线程的工作内存。</p>
+<p>例如<code>i = 10</code>，规定线程从主存中复制i到自己的工作内存中，然后在工作内存中赋值i的值为10，最后再刷新主存中的i的值。注意，线程不是直接操作主存中的变量。</p>
+<h3 id="原子性-1"><a href="#原子性-1" class="headerlink" title="原子性"></a>原子性</h3><ul>
+<li>在Java中，对基本数据类型的变量进行简单的读取和赋值是原子性的，不可被中断的。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="number">1</span>;      <span class="comment">//语句1</span></span><br><span class="line">y = x;      <span class="comment">//语句2</span></span><br><span class="line">x++;        <span class="comment">//语句3</span></span><br><span class="line">x = x + <span class="number">1</span>;  <span class="comment">//语句4</span></span><br></pre></td></tr></table></figure>
+
+<p>以上4个语句，只有语句1变量赋值是原子操作。语句2涉及读取x、赋值y的两步操作。虽然单步是原子操作，但是两步合起来就不是了。同样语句3和语句4都是读取x、执行x+1、赋值给x，三步。</p>
+<blockquote>
+<p>不过这里有一点需要注意：在32位平台下，对64位数据的读取和赋值是需要通过两个操作来完成的，不能保证其原子性。但是好像在最新的JDK中，JVM已经保证对64位数据的读取和赋值也是原子性操作了。</p>
+</blockquote>
+<ul>
+<li>对于其他代码块的原子性问题，可以通过<code>synchronized</code>和<code>Lock</code>来锁块。</li>
+</ul>
+<h3 id="可见性-1"><a href="#可见性-1" class="headerlink" title="可见性"></a>可见性</h3><p>对于可见性，Java使用volatile来保证。也就是本章的主题。</p>
+<p>当一个共享变量被volatile修饰时，会保证在被修改的时候立刻存入主存，当有其他线程需要读取时，会重新到主存中读取新的值。</p>
+<p>而未修饰的共享变量则无法保证可见性，因为写入主存的时间不固定。</p>
+<p>另外，通过<code>synchronized</code>和<code>Lock</code>也可以保证可见性，因为它们可以保证同一时刻只有一个线程操作变量（对象），执行代码直至释放锁。在释放锁之前，会将对变量的修改写入主存中。</p>
+<h3 id="有序性-1"><a href="#有序性-1" class="headerlink" title="有序性"></a>有序性</h3><p>之前提到过JVM的指令重排问题。这里可以用volatile保证一定的有序性（原因见下）。当然，<code>synchronized</code>和<code>Lock</code>一样可以，原因不再赘述。</p>
+<blockquote>
+<p>Java内存模型具备一些先天的“有序性”，即不需要通过任何手段就能够得到保证的有序性，这个通常也称为 happens-before 原则。如果两个操作的执行次序无法从happens-before原则推导出来，那么它们就不能保证它们的有序性，虚拟机可以随意地对它们进行重排序。</p>
+</blockquote>
+<h3 id="happens-before-原则"><a href="#happens-before-原则" class="headerlink" title="happens-before 原则"></a>happens-before 原则</h3><blockquote><ul>
+<li>程序次序规则：一个线程内，按照代码顺序，书写在前面的操作先行发生于书写在后面的操作</li>
+<li>锁定规则：一个unLock操作先行发生于后面对同一个锁的lock操作</li>
+<li>volatile变量规则：对一个变量的写操作先行发生于后面对这个变量的读操作</li>
+<li>传递规则：如果操作A先行发生于操作B，而操作B又先行发生于操作C，则可以得出操作A先行发生于操作C</li>
+<li>线程启动规则：Thread对象的start()方法先行发生于此线程的每个一个动作</li>
+<li>线程中断规则：对线程interrupt()方法的调用先行发生于被中断线程的代码检测到中断事件的发生</li>
+<li>线程终结规则：线程中所有的操作都先行发生于线程的终止检测，我们可以通过Thread.join()方法结束、Thread.isAlive()的返回值手段检测到线程已经终止执行</li>
+<li>对象终结规则：一个对象的初始化完成先行发生于他的finalize()方法的开始</li>
+</ul>
+<footer><strong>《深入理解Java虚拟机》</strong></footer></blockquote>
+
+<ol>
+<li>单线程内程序的运行结果和代码的书写顺序一致。这里并不是指程序执行过程一致，因为JVM有重排机制，但是输出的结果是肯定一致的。</li>
+<li>也就是说，不论单线程还是多线程，都会等待线程锁释放后再执行获取锁的操作。</li>
+<li>volatile的关键特性，简单的说就是，如果一个线程先去写一个变量，另一个线程进行读取，那么volatile保证写入一定在读取之前。</li>
+<li>happens-before具有传递性。</li>
+</ol>
+<p>后面4条比较简单，就不赘述了。</p>
+<h2 id="剖析volatile关键字"><a href="#剖析volatile关键字" class="headerlink" title="剖析volatile关键字"></a>剖析volatile关键字</h2><h3 id="两层语义"><a href="#两层语义" class="headerlink" title="两层语义"></a>两层语义</h3><p>一旦一个共享变量被volatile修饰后，则具备以下两个语义：</p>
+<ol>
+<li>保证了不同线程对这个变量操作的可见性，即一个线程修改了变量的值，在对另一个线程是立即可见的，读取变量时会重新进入主存中读取。</li>
+<li>禁止了指令重排。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//thread 1</span></span><br><span class="line"><span class="keyword">boolean</span> stop = <span class="keyword">false</span>;</span><br><span class="line"><span class="keyword">while</span>(!stop) doSomething();</span><br><span class="line"></span><br><span class="line"><span class="comment">//thread2</span></span><br><span class="line">stop = <span class="keyword">true</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这是一个常见的带有中断的多线程任务流程。按照代码执行，线程2一定会使线程1中断吗？</p>
+<p>不一定。由于之前所说的JMM规则（可见性）导致的这一问题。这种bug概率虽极低，但是一旦出现，不好排查且后果严重，会造成无限循环、死锁等。</p>
+<p>具体描述是，线程1有自己的工作线程，读取stop值后复制到自己的工作内存中，此时执行工作。如果此时线程2读取主存的stop值，然后在自己的工作内存中改变stop，在写入主存之前，被中断或进行其他工作。此时线程1则会无法知道stop已经被改变，进而引发问题。</p>
+<p>但是如果被volatile修饰后，则：</p>
+<ol>
+<li>强制修改变量的值立刻写入主存。</li>
+<li>当线程2进行修改时，会导致线程1工作内存的stop缓存无效（映射到硬件层的话，就是CPU的L1或L2缓存中的对应缓存行无效）。</li>
+<li>由于线程1中stop缓存无效，则线程1会去主存中重新读取stop的值。程序运行正常。</li>
+</ol>
+<h3 id="保证原子性"><a href="#保证原子性" class="headerlink" title="保证原子性"></a>保证原子性</h3><ul>
+<li>volatile无法保证对变量的任何操作的原子性。</li>
+</ul>
+<p>当然，基于JMM，原子操作的原子性肯定是可以保证的。</p>
+<p>此时可以采用<code>synchronized</code>和<code>Lock</code>来解决代码块的原子性问题。对于基础数据结构，Java还提供了原子数据结构（比如<code>AtomicInteger</code>）,对自增、自减、加法、减法进行封装，保证这些操作的原子性。</p>
+<blockquote>
+<p><code>AtomicInteger</code>利用CAS(Compare And Swap)来实现原子操作的，CAS实际是利用处理器提供的CMPXCHG指令实现的，而处理器执行CMPXCHG是原子操作。</p>
+</blockquote>
+<h3 id="保证有序性"><a href="#保证有序性" class="headerlink" title="保证有序性"></a>保证有序性</h3><ul>
+<li>volatile禁止指令重排，所以一定程度上可以保证有序性。</li>
+</ul>
+<p>这里有两层含义：</p>
+<ol>
+<li>当程序执行到volatile修饰的变量（读写）时，在其之前的操作保证一定完成，且结果对后续程序可见（写入主存），在其后面的语句还未执行。</li>
+<li>JVM将指令优化时，无法将volatile修饰的变量进行重排（无法改变变量执行时的顺序）</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//thread1</span></span><br><span class="line">Context context = getContext(); <span class="comment">//语句1</span></span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">boolean</span> init = <span class="keyword">true</span>;   <span class="comment">//语句2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//thread2</span></span><br><span class="line"><span class="keyword">while</span>(!init) sleep();           <span class="comment">//语句3</span></span><br><span class="line">doSomething(context);           <span class="comment">//语句4</span></span><br></pre></td></tr></table></figure>
+
+<p>比如之前的代码，若volatile对init修饰，则不会出现语句2在语句1之前执行，程序正确执行。</p>
+<h3 id="原理和实现机制"><a href="#原理和实现机制" class="headerlink" title="原理和实现机制"></a>原理和实现机制</h3><blockquote><p>“观察加入volatile关键字和没有加入volatile关键字时所生成的汇编代码发现，加入volatile关键字时，会多出一个lock前缀指令”</p>
+<footer><strong>《深入理解Java虚拟机》</strong></footer></blockquote>
+
+<p>lock前缀指令相当于内存屏障（内存栅栏），提供3个功能：</p>
+<ol>
+<li>执行指令时，前面的操作已经全部完成。</li>
+<li>强制缓存修改参数立刻写入主存。</li>
+<li>如果是写操作，会导致其他CPU中对于的缓存无效（可见性）。</li>
+</ol>
+<h2 id="volatile使用场景"><a href="#volatile使用场景" class="headerlink" title="volatile使用场景"></a>volatile使用场景</h2><p><code>synchronized</code>可以防止多个线程执行一段代码块，但是影响程序执行效率，而volatile在某些情况下的性能要优于<code>synchronized</code>。但是之前说过，volatile无法保证操作的原子性，所以无法替代<code>synchronized</code>。一般来说，使用volatile必须具备以下条件：</p>
+<ol>
+<li>对变量的写操作不依赖当前值。</li>
+<li>该变量没有包含在具有其他变量的不变式中。</li>
+</ol>
+<p>以上表明，可以被写入volatile变量的有效值是独立于程序的任何状态，包括变量的当前状态。</p>
+<p>其实主要上述是为了保证操作是原子操作，否则在并发时无法得到正确执行。</p>
+<p>以下举例常用场景：</p>
+<figure class="highlight java"><figcaption><span>中断线程任务</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">volatile</span> <span class="keyword">boolean</span> flag = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//thread 1</span></span><br><span class="line"><span class="keyword">while</span>(!flag) &#123;...&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//thread2</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFlag</span><span class="params">(<span class="keyword">boolean</span> flag)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.flag = flag;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个之前讨论过了，就不赘述了。</p>
+<figure class="highlight java"><figcaption><span>double-check</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Singleton instance = <span class="keyword">null</span>;</span><br><span class="line">     </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">     </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Singleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span>(instance == <span class="keyword">null</span>)</span><br><span class="line">                    instance = <span class="keyword">new</span> Singleton();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>双重检查源自Java的Singleton单例模式(同步延迟加载)。关于单例模式，有空再总结一下。</p>
+<hr>
+<p><em>参考文献：《Java编程思想》《深入理解Java虚拟机》</em></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/09/11/Volatile/">Volatile关键字解析</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
+        <p><span>发布时间:</span>2018-09-11, 17:47:09</p>
+        <p><span>最后更新:</span>2020-09-12, 16:12:15</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/09/11/Volatile/" title="Volatile关键字解析">http://yif-hong.github.io/2018/09/11/Volatile/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yif-hong.github.io/2018/09/11/Volatile/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/09/19/java-constructor/">
+                    当我们谈论Java构造器时，我们在讨论什么？
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/09/02/Graph-SP/">
+                    图论——最短路径
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">内存模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98"><span class="toc-number">1.1.</span> <span class="toc-text">高速缓存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E4%B8%8D%E4%B8%80%E8%87%B4"><span class="toc-number">1.2.</span> <span class="toc-text">缓存不一致</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">并发编程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="toc-number">2.1.</span> <span class="toc-text">原子性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="toc-number">2.2.</span> <span class="toc-text">可见性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E5%BA%8F%E6%80%A7"><span class="toc-number">2.3.</span> <span class="toc-text">有序性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">3.</span> <span class="toc-text">Java内存模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%AD%90%E6%80%A7-1"><span class="toc-number">3.1.</span> <span class="toc-text">原子性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E8%A7%81%E6%80%A7-1"><span class="toc-number">3.2.</span> <span class="toc-text">可见性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E5%BA%8F%E6%80%A7-1"><span class="toc-number">3.3.</span> <span class="toc-text">有序性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#happens-before-%E5%8E%9F%E5%88%99"><span class="toc-number">3.4.</span> <span class="toc-text">happens-before 原则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%96%E6%9E%90volatile%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">4.</span> <span class="toc-text">剖析volatile关键字</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E5%B1%82%E8%AF%AD%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">两层语义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%9D%E8%AF%81%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="toc-number">4.2.</span> <span class="toc-text">保证原子性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%9D%E8%AF%81%E6%9C%89%E5%BA%8F%E6%80%A7"><span class="toc-number">4.3.</span> <span class="toc-text">保证有序性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">4.4.</span> <span class="toc-text">原理和实现机制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#volatile%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">5.</span> <span class="toc-text">volatile使用场景</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Volatile关键字解析　| Yif　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+        <div class="addthis_sharing_toolbox"></div>
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'http://yif-hong.github.io/2018/09/11/Volatile/';
+            this.page.identifier = '2018/09/11/Volatile/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//yifhong.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/09/19/java-constructor/" title="上一篇: 当我们谈论Java构造器时，我们在讨论什么？">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/09/02/Graph-SP/" title="下一篇: 图论——最短路径">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/09/29/BaseSort/">排序算法——基于比较的算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/19/java-constructor/">当我们谈论Java构造器时，我们在讨论什么？</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/11/Volatile/">Volatile关键字解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-SP/">图论——最短路径</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-MST/">图论——最小生成树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-Topological/">图论——拓扑排序</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/Graph-general/">图论——基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/LeetcodeExercise/">Leetcode刷题记录（日更）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/HashTable/">散列表</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/RedBlackBST/">红黑树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/BST/">二叉树</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018-2020 Yif Hong
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-129136937-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

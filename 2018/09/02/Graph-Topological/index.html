@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Yif Hong" />
+
+
+
+<meta name="description" content="阅读此篇之前，需要了解图论的基础知识。  拓扑排序可以解决我们有优先级限制下的任务调度问题中的排序问题，或是类似Java中类的继承关系。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图论——拓扑排序">
+<meta property="og:url" content="http://yif-hong.github.io/2018/09/02/Graph-Topological/index.html">
+<meta property="og:site_name" content="Yif">
+<meta property="og:description" content="阅读此篇之前，需要了解图论的基础知识。  拓扑排序可以解决我们有优先级限制下的任务调度问题中的排序问题，或是类似Java中类的继承关系。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-09-02T06:38:57.000Z">
+<meta property="article:modified_time" content="2020-09-12T08:12:15.278Z">
+<meta property="article:author" content="Yif Hong">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Graph">
+<meta name="twitter:card" content="summary">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Yif" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>图论——拓扑排序 | Yif</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bea9f3e6e421e5"></script>
+
+
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/"></a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:yifhongrui@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" rel="noopener" href="https://weibo.com/u/3852481088" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" rel="noopener" href="https://github.com/yif-hong" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" rel="noopener" href="https://www.zhihu.com/people/hong-yifeng-7" title="知乎"></a>
+                            
+                                <a class="fa 简书" target="_blank" rel="noopener" href="https://www.jianshu.com/u/b256468d0120" title="简书"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" rel="noopener" href="https://music.163.com/#/user/home?id=57389967" title="网易云音乐"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/" rel="tag">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/" rel="tag">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://github.com/yif-hong">GitHub</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Alone</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页"></a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页"></a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:yifhongrui@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/u/3852481088" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/yif-hong" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/people/hong-yifeng-7" title="知乎"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="https://www.jianshu.com/u/b256468d0120" title="简书"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="https://music.163.com/#/user/home?id=57389967" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Graph-Topological" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/09/02/Graph-Topological/" class="article-date">
+      <time datetime="2018-09-02T06:38:57.000Z" itemprop="datePublished">2018-09-02</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      图论——拓扑排序
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Algorithm/">Algorithm</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/" rel="tag">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <blockquote>
+<p><em>阅读此篇之前，需要了解<a target="_blank" rel="noopener" href="http://yifhong.com/2018/09/01/Graph-general/">图论的基础知识</a>。</em></p>
+</blockquote>
+<p>拓扑排序可以解决我们有<strong>优先级限制</strong>下的任务调度问题中的排序问题，或是类似Java中类的继承关系。</p>
+<a id="more"></a>
+
+<p>先来看下概念：</p>
+<blockquote>
+<p>拓扑排序：给定一个有向图，将所有的顶点排序，使得所有的有向边均从排在前面的元素指向排在后面的元素。（或是说明无法做到这一点）</p>
+</blockquote>
+<p>通常在进行任务调度类问题需要3步走：</p>
+<ol>
+<li>指明任务和优先级。（确定顶点和有向边）</li>
+<li>不断检测并去除有向图中的所有环，以确保存在可执行的方案。（构建有向图，检测环）</li>
+<li>使用拓扑排序解决问题。（拓扑排序）</li>
+</ol>
+<p>有向图的构建，已经在<a target="_blank" rel="noopener" href="http://yifhong.com/2018/09/02/Graph-general">图论的基础知识</a>中详细阐述了，接下来就是如何解决环的问题。</p>
+<h2 id="有向环"><a href="#有向环" class="headerlink" title="有向环"></a>有向环</h2><p><em>如果任务x必须在y之前完成，y必须在z之前完成，z必须在x之前完成，出现了有向环，那么这个问题就是无解的。</em></p>
+<h3 id="检测有向环"><a href="#检测有向环" class="headerlink" title="检测有向环"></a>检测有向环</h3><p>通过深度优先搜索DFS可以很简单的完成这个检测。</p>
+<p>当我们进行DFS时，维护的递归调用栈表示的是系统正在遍历的有向路径，一旦我们找到了一条路径<code>v -&gt; w</code>已经存在于栈中，那么我们就找到了一个环。</p>
+<p>相较于有向图而言，使用一个<code>boolean</code>数组<code>onStack[]</code>来保存遍历过的路径，作为检测依据。并用一个<code>Stack</code>来保存环。</p>
+<figure class="highlight java"><figcaption><span>DirectedCycle 有向环的检测</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_2/DirectedCycle.java">DirectedCycle.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DirectedCycle</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span>[] marked;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] edgeTo;</span><br><span class="line">    <span class="keyword">private</span> Stack&lt;Integer&gt; cycle;   <span class="comment">//有向环中的所有顶点（如果存在）</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span>[] onStack;      <span class="comment">//递归调用的栈上的所有顶点</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DirectedCycle</span><span class="params">(Digraph G)</span> </span>&#123;</span><br><span class="line">        onStack = <span class="keyword">new</span> <span class="keyword">boolean</span>[G.V()];</span><br><span class="line">        marked = <span class="keyword">new</span> <span class="keyword">boolean</span>[G.V()];</span><br><span class="line">        edgeTo = <span class="keyword">new</span> <span class="keyword">int</span>[G.V()];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> v = <span class="number">0</span>; v &lt; G.V(); v++)</span><br><span class="line">            <span class="keyword">if</span> (!marked[v])</span><br><span class="line">                dfs(G, v);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(Digraph G, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        onStack[v] = <span class="keyword">true</span>;</span><br><span class="line">        marked[v] = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> w : G.adj(v)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (hasCycle()) <span class="keyword">return</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (!marked[w]) &#123;</span><br><span class="line">                edgeTo[w] = v;</span><br><span class="line">                dfs(G, w);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (onStack[w]) &#123;</span><br><span class="line">                cycle = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> x = v; x != w; x = edgeTo[x])</span><br><span class="line">                    cycle.push(x);</span><br><span class="line">                cycle.push(w);</span><br><span class="line">                cycle.push(v);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        onStack[v] = <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasCycle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cycle != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;Integer&gt; <span class="title">cycle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cycle;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="拓扑排序数据结构"><a href="#拓扑排序数据结构" class="headerlink" title="拓扑排序数据结构"></a>拓扑排序数据结构</h2><h3 id="基于DFS的逆后序排序"><a href="#基于DFS的逆后序排序" class="headerlink" title="基于DFS的逆后序排序"></a>基于DFS的逆后序排序</h3><p>拓扑排序所需要的顶点顺序，其实只需要将DFS算法每次访问的顶点（DFS递归访问时，每个顶点只访问一次）采取逆后序排序即可。（压入栈中）</p>
+<blockquote>
+<p>原理：对于<code>v -&gt; w</code>，在进行DFS时递归访问，总是<code>dsf(w)</code>先于<code>dsf(v)</code>完成，故将完成<code>dfs()</code>访问一个顶点时压入栈即可完成<code>v -&gt; w</code>顺序。</p>
+</blockquote>
+<figure class="highlight java"><figcaption><span>DepthFirstOrder 基于DFS的逆后序排序</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_2/DepthFirstOrder.java">DepthFirstOrder.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DepthFirstOrder</span> </span>&#123;</span><br><span class="line">    ···</span><br><span class="line">    <span class="keyword">private</span> Stack&lt;Integer&gt; reversePost; <span class="comment">//所有顶点的逆后序排列(stack)</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(Digraph G, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        ···</span><br><span class="line">        reversePost.push(v);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;Integer&gt; <span class="title">reversePost</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> reversePost;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="拓扑排序实现"><a href="#拓扑排序实现" class="headerlink" title="拓扑排序实现"></a>拓扑排序实现</h3><p>非常简单，就是检测环，如果是有向无环图<code>DAG</code>，则返回顶点逆后序排序即可。</p>
+<figure class="highlight java"><figcaption><span>Topological 拓扑排序</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_2/Topological.java">Topological.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Topological</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Iterable&lt;Integer&gt; order;        <span class="comment">//顶点的拓扑排序,为所有顶点的逆后序排列。</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Topological</span><span class="params">(Digraph G)</span> </span>&#123;</span><br><span class="line">        DirectedCycle cycleFinder = <span class="keyword">new</span> DirectedCycle(G);</span><br><span class="line">        <span class="keyword">if</span> (!cycleFinder.hasCycle()) &#123;</span><br><span class="line">            DepthFirstOrder dfs = <span class="keyword">new</span> DepthFirstOrder(G);</span><br><span class="line">            order = dfs.reversePost();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;Integer&gt; <span class="title">order</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> order;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="性能："><a href="#性能：" class="headerlink" title="性能："></a>性能：</h3><blockquote>
+<ul>
+<li><strong>时间：和V+E成正比</strong></li>
+</ul>
+</blockquote>
+<p>这是由于每次拓扑排序时，会进行两次DFS。</p>
+<p>第一次DFS遍历有向图确保无环，此时V+E。第二次DFS产生逆后序排序，此时V+E。两次都访问了顶点和边，故与V+E成正比。</p>
+<h2 id="强连通分量"><a href="#强连通分量" class="headerlink" title="强连通分量"></a>强连通分量</h2><blockquote>
+<p>探寻两点之间是否互相可达，是有向图中的另一个重要部分——强连通分量。</p>
+</blockquote>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p>这是一种非常重要的抽象，可以理解为几个相互关联的部分（顶点）是否是一种类型的。比如程序员对于程序模块的划分、写书的作者对于话题或者书中知识点的分类、生物学食物链中的能量流动是否存在相互关系、巨型互联网中网页网站的分模块处理等等。</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>想实现一个平方级的算法并不难，但是对于大型数据而言是不可接受的（大型稀疏图）。<br>这里介绍一个<code>Kosaraju算法</code>巧妙的实现。</p>
+<ul>
+<li>给定的有向图G，使用<code>DepthFirstOrder</code>来计算G的反向图Gr的逆后序排列，得到<code>order</code>。</li>
+<li>在G的构造函数中DFS，但是DFS访问的顶点顺序根据<code>order</code>进行。</li>
+</ul>
+<p>实现简单，但是理解比较难。</p>
+<blockquote>
+<p>命题：用<code>Kosaraju算法</code>处理G，其构造函数中的每次递归都在同一个强连通分量中。<br>证明：</p>
+<ol>
+<li>首先证明每个和s强连通的顶点v都会在构造函数<code>dfs(G,s)</code>中访问到。（这个不难理解，反证法即可）</li>
+<li>再证明v和s必然是强连通的。设v为<code>dfs(G,s)</code>中到达的某个顶点，那么G中必然存在s到v的路径。故只要证明存在v到s的路径即可。等价于证明Gr中存在s到v的路径。其中Gr中已经含有v到s的路径，故对Gr进行DFS时，<code>dfs(G,v)</code>必然先于<code>dfs(G,s)</code>结束，并且是在<code>dfs(G,s)</code>之后调用的，这个顺序是由DFS的递归访问导致的。所以此时说明了存在一条s到v的路径。</li>
+</ol>
+</blockquote>
+<figure class="highlight java"><figcaption><span>KosarajuSCC 检测强连通分量</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_2/KosarajuSCC.java">KosarajuSCC.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KosarajuSCC</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span>[] marked;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] id;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> count;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">KosarajuSCC</span><span class="params">(Digraph G)</span> </span>&#123;</span><br><span class="line">        marked = <span class="keyword">new</span> <span class="keyword">boolean</span>[G.V()];</span><br><span class="line">        id = <span class="keyword">new</span> <span class="keyword">int</span>[G.V()];</span><br><span class="line">        DepthFirstOrder order = <span class="keyword">new</span> DepthFirstOrder(G);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> s : order.reversePost()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!marked[s]) &#123;</span><br><span class="line">                dfs(G, s);</span><br><span class="line">                count++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(Digraph G, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        marked[v] = <span class="keyword">true</span>;</span><br><span class="line">        id[v] = count;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> w : G.adj(v))</span><br><span class="line">            <span class="keyword">if</span> (!marked[w])</span><br><span class="line">                dfs(G, w);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">stronglyConnected</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> w)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id[v] == id[w];</span><br><span class="line">    &#125;</span><br><span class="line">    ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中有向图的反转实现如下：</p>
+<figure class="highlight java"><figcaption><span>Digraph 有向图反转</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_2/Digraph.java">Digraph.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Digraph</span> </span>&#123;</span><br><span class="line">    ···</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Digraph <span class="title">reverse</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Digraph R = <span class="keyword">new</span> Digraph(V);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> v = <span class="number">0</span>; v &lt; V; v++)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> w : adj[v])</span><br><span class="line">                R.addEdge(w, v);</span><br><span class="line">        <span class="keyword">return</span> R;</span><br><span class="line">    &#125;</span><br><span class="line">    ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="性能：-1"><a href="#性能：-1" class="headerlink" title="性能："></a>性能：</h3><blockquote>
+<p><strong>预处理</strong></p>
+<ul>
+<li>空间：与V+E成正比</li>
+<li>时间：与V+E成正比</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>查询</strong></p>
+<ul>
+<li>时间：线性</li>
+</ul>
+</blockquote>
+<hr>
+<p><em>参考文献：《算法导论》 《Algorithms, 4th Edition》</em></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/09/02/Graph-Topological/">图论——拓扑排序</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
+        <p><span>发布时间:</span>2018-09-02, 14:38:57</p>
+        <p><span>最后更新:</span>2020-09-12, 16:12:15</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/09/02/Graph-Topological/" title="图论——拓扑排序">http://yif-hong.github.io/2018/09/02/Graph-Topological/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yif-hong.github.io/2018/09/02/Graph-Topological/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/09/02/Graph-MST/">
+                    图论——最小生成树
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/09/01/Graph-general/">
+                    图论——基础
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E5%90%91%E7%8E%AF"><span class="toc-number">1.</span> <span class="toc-text">有向环</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E6%9C%89%E5%90%91%E7%8E%AF"><span class="toc-number">1.1.</span> <span class="toc-text">检测有向环</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">拓扑排序数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8EDFS%E7%9A%84%E9%80%86%E5%90%8E%E5%BA%8F%E6%8E%92%E5%BA%8F"><span class="toc-number">2.1.</span> <span class="toc-text">基于DFS的逆后序排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.2.</span> <span class="toc-text">拓扑排序实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%EF%BC%9A"><span class="toc-number">2.3.</span> <span class="toc-text">性能：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F"><span class="toc-number">3.</span> <span class="toc-text">强连通分量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8"><span class="toc-number">3.1.</span> <span class="toc-text">应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.2.</span> <span class="toc-text">实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%EF%BC%9A-1"><span class="toc-number">3.3.</span> <span class="toc-text">性能：</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"图论——拓扑排序　| Yif　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+        <div class="addthis_sharing_toolbox"></div>
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'http://yif-hong.github.io/2018/09/02/Graph-Topological/';
+            this.page.identifier = '2018/09/02/Graph-Topological/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//yifhong.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/09/02/Graph-MST/" title="上一篇: 图论——最小生成树">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/09/01/Graph-general/" title="下一篇: 图论——基础">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/09/29/BaseSort/">排序算法——基于比较的算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/19/java-constructor/">当我们谈论Java构造器时，我们在讨论什么？</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/11/Volatile/">Volatile关键字解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-SP/">图论——最短路径</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-MST/">图论——最小生成树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-Topological/">图论——拓扑排序</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/Graph-general/">图论——基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/LeetcodeExercise/">Leetcode刷题记录（日更）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/HashTable/">散列表</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/RedBlackBST/">红黑树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/BST/">二叉树</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018-2020 Yif Hong
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-129136937-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

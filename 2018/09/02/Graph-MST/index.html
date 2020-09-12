@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Yif Hong" />
+
+
+
+<meta name="description" content="阅读此篇之前，需要了解图论的基础知识。  最小生成树MST应用的领域十分广泛，它比普通的无向图（连通图）多了权重的属性，这就使最小生成树可以被用来评估成本最小化的问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图论——最小生成树">
+<meta property="og:url" content="http://yif-hong.github.io/2018/09/02/Graph-MST/index.html">
+<meta property="og:site_name" content="Yif">
+<meta property="og:description" content="阅读此篇之前，需要了解图论的基础知识。  最小生成树MST应用的领域十分广泛，它比普通的无向图（连通图）多了权重的属性，这就使最小生成树可以被用来评估成本最小化的问题。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-09-02T10:10:21.000Z">
+<meta property="article:modified_time" content="2020-09-12T08:12:15.278Z">
+<meta property="article:author" content="Yif Hong">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Graph">
+<meta name="twitter:card" content="summary">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Yif" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>图论——最小生成树 | Yif</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bea9f3e6e421e5"></script>
+
+
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/"></a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:yifhongrui@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" rel="noopener" href="https://weibo.com/u/3852481088" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" rel="noopener" href="https://github.com/yif-hong" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" rel="noopener" href="https://www.zhihu.com/people/hong-yifeng-7" title="知乎"></a>
+                            
+                                <a class="fa 简书" target="_blank" rel="noopener" href="https://www.jianshu.com/u/b256468d0120" title="简书"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" rel="noopener" href="https://music.163.com/#/user/home?id=57389967" title="网易云音乐"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/" rel="tag">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/" rel="tag">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://github.com/yif-hong">GitHub</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Alone</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页"></a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页"></a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:yifhongrui@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/u/3852481088" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/yif-hong" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/people/hong-yifeng-7" title="知乎"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="https://www.jianshu.com/u/b256468d0120" title="简书"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="https://music.163.com/#/user/home?id=57389967" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Graph-MST" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/09/02/Graph-MST/" class="article-date">
+      <time datetime="2018-09-02T10:10:21.000Z" itemprop="datePublished">2018-09-02</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      图论——最小生成树
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Algorithm/">Algorithm</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/" rel="tag">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <blockquote>
+<p><em>阅读此篇之前，需要了解<a target="_blank" rel="noopener" href="http://yifhong.com/2018/09/01/Graph-general/">图论的基础知识</a>。</em></p>
+</blockquote>
+<p>最小生成树MST应用的领域十分广泛，它比普通的无向图（连通图）多了权重的属性，这就使最小生成树可以被用来评估成本最小化的问题。</p>
+<a id="more"></a>
+
+<blockquote>
+<p>一些约定：</p>
+<ul>
+<li>只考虑连通图。（树是连通的）</li>
+<li>边的权重不一定表示距离。（可以表示很多意义）</li>
+<li>边的权重可能为0，也可能为负。</li>
+<li>所有边的权重各不相同。（相同权重的边会导致出现不同的最小生成树，为了简化分析，故此约定。但算法的实现不影响相同权重的情况。）</li>
+</ul>
+</blockquote>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>树的性质：</p>
+<ul>
+<li>连通树中任意两个顶点都会产生环。</li>
+<li>删除任意一条边都会得到两个独立的树。</li>
+</ul>
+<h3 id="切分定理"><a href="#切分定理" class="headerlink" title="切分定理"></a>切分定理</h3><blockquote>
+<p>切分是将图的所有顶点分为两个非空且互不重叠的集合。<br>横切边是指一条连接两个属于不同集合顶点的边。<br><strong>给定任意的切分，横切边中最小者必然属于最小生成树。</strong></p>
+</blockquote>
+<p>切分定理也可以理解为一种<strong>贪心算法</strong>。不断重复寻找最小的横切边从而生成最小生成树。</p>
+<h2 id="加权无向图"><a href="#加权无向图" class="headerlink" title="加权无向图"></a>加权无向图</h2><p>为了可以处理权重，我们在无向图的基础上，加入带有权重的边<code>Edge</code>来生成加权无向图<code>EdgeWeightedGraph</code>。</p>
+<h3 id="带有权重的边"><a href="#带有权重的边" class="headerlink" title="带有权重的边"></a>带有权重的边</h3><figure class="highlight java"><figcaption><span>Edge 带有权重的边</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_3/Edge.java">Edge.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Edge</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">Edge</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> v;            <span class="comment">//顶点之一</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> w;            <span class="comment">//另一个顶点</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">double</span> weight;    <span class="comment">//边的权重</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Edge</span><span class="params">(<span class="keyword">int</span> v, <span class="keyword">int</span> w, <span class="keyword">double</span> weight)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.v = v;</span><br><span class="line">        <span class="keyword">this</span>.w = w;</span><br><span class="line">        <span class="keyword">this</span>.weight = weight;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">weight</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> weight;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">either</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> v;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">other</span><span class="params">(<span class="keyword">int</span> vertex)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (vertex == v) <span class="keyword">return</span> w;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (vertex == w) <span class="keyword">return</span> v;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;Inconsistent edge&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Edge that)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Double.compare(<span class="keyword">this</span>.weight(), that.weight());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="实现加权无向图"><a href="#实现加权无向图" class="headerlink" title="实现加权无向图"></a>实现加权无向图</h3><p>只需修改Graph中的<code>addEdge()</code>和邻接表<code>adj[]</code>即可。</p>
+<figure class="highlight java"><figcaption><span>EdgeWeightedGraph 加权无向图</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_3/EdgeWeightedGraph.java">EdgeWeightedGraph.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EdgeWeightedGraph</span> </span>&#123;</span><br><span class="line">    ···</span><br><span class="line">    <span class="keyword">private</span> Bag&lt;Edge&gt;[] adj;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">EdgeWeightedGraph</span><span class="params">(<span class="keyword">int</span> V)</span> </span>&#123;</span><br><span class="line">        ···</span><br><span class="line">        adj = (Bag&lt;Edge&gt;[]) <span class="keyword">new</span> Bag[V];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> v = <span class="number">0</span>; v &lt; V; v++)</span><br><span class="line">            adj[v] = <span class="keyword">new</span> Bag&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(Edge edge)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> v = edge.either();</span><br><span class="line">        <span class="keyword">int</span> w = edge.other(v);</span><br><span class="line">        adj[v].add(edge);</span><br><span class="line">        adj[w].add(edge);</span><br><span class="line">        E++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;Edge&gt; <span class="title">adj</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> adj[v];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;Edge&gt; <span class="title">edges</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Bag&lt;Edge&gt; bag = <span class="keyword">new</span> Bag&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> v = <span class="number">0</span>; v &lt; V; v++)</span><br><span class="line">            <span class="keyword">for</span> (Edge edge : adj[v])</span><br><span class="line">                <span class="keyword">if</span> (edge.other(v) &gt; v) bag.add(edge);<span class="comment">//防止重复添加</span></span><br><span class="line">        <span class="keyword">return</span> bag;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Prim算法"><a href="#Prim算法" class="headerlink" title="Prim算法"></a>Prim算法</h2><blockquote>
+<p>Prim算法的每一步都会为一颗生长的树添加一条边。这条边是<strong>由树中的顶点，与不在树中的顶点且权重最小的边构成。</strong></p>
+</blockquote>
+<h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><ul>
+<li>顶点。通过<code>marked[]</code>标记是否已访问。</li>
+<li>边。用<code>Queue队列</code>或<code>edgeTo[]数组</code>保存边，其中<code>edgeTo[v]</code>为将v(不在树中)连接到树中的<code>Edge</code>对象。</li>
+<li>横切边。通过使用优先队列<code>MinPQ&lt;Edge&gt;</code>来根据权重返回最小的边。</li>
+</ul>
+<h4 id="优先队列"><a href="#优先队列" class="headerlink" title="优先队列"></a>优先队列</h4><p>这里<code>MinPQ&lt;T&gt;</code>只是一种优先队列，提供<code>deleteMin()</code>删除返回最小项，<code>insert(T item)</code>插入新的项。</p>
+<h5 id="优先队列性能"><a href="#优先队列性能" class="headerlink" title="优先队列性能"></a>优先队列性能</h5><ul>
+<li>空间：E</li>
+<li>时间：logE</li>
+</ul>
+<h3 id="Prim延迟实现"><a href="#Prim延迟实现" class="headerlink" title="Prim延迟实现"></a>Prim延迟实现</h3><p>延迟实现，指的是优先队列添加边时，先不检查是否有效（有效指是否已被访问、是否新添加的边权重更小），而是在<code>deleteMin()</code>时，再检查边的有效性。</p>
+<figure class="highlight java"><figcaption><span>LazyPrimMST Prim延迟算法</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_3/LazyPrimMST.java">LazyPrimMST.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyPrimMST</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span>[] marked;   <span class="comment">//最小生成树的顶点</span></span><br><span class="line">    <span class="keyword">private</span> Queue&lt;Edge&gt; mst;    <span class="comment">//最小生成树的边</span></span><br><span class="line">    <span class="keyword">private</span> MinPQ&lt;Edge&gt; pq;     <span class="comment">//横切边（包括失效的边）,MinPQ为优先队列</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LazyPrimMST</span><span class="params">(EdgeWeightedGraph G)</span> </span>&#123;</span><br><span class="line">        pq = <span class="keyword">new</span> MinPQ&lt;&gt;();</span><br><span class="line">        marked = <span class="keyword">new</span> <span class="keyword">boolean</span>[G.V()];</span><br><span class="line">        mst = <span class="keyword">new</span> Queue&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        visit(G, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">while</span> (!pq.isEmpty()) &#123;</span><br><span class="line">            Edge e = pq.delMin();                   <span class="comment">//从pq中得到权重最小的边</span></span><br><span class="line">            <span class="keyword">int</span> v = e.either(), w = e.other(v);</span><br><span class="line">            <span class="keyword">if</span> (marked[v] &amp;&amp; marked[w]) <span class="keyword">continue</span>;   <span class="comment">//跳过失效的边</span></span><br><span class="line">            mst.enqueue(e);                         <span class="comment">//将边添加到树中</span></span><br><span class="line">            <span class="keyword">if</span> (!marked[v]) visit(G, v);            <span class="comment">//将顶点添加到树中</span></span><br><span class="line">            <span class="keyword">if</span> (!marked[w]) visit(G, w);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">visit</span><span class="params">(EdgeWeightedGraph G, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//标记顶点v并将所有连接v和未被标记的边加入pq</span></span><br><span class="line">        marked[v] = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> (Edge e : G.adj(v))</span><br><span class="line">            <span class="keyword">if</span> (!marked[e.other(v)]) pq.insert(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;Edge&gt; <span class="title">edges</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mst;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">weight</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">double</span> weight = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">for</span> (Edge e : edges())</span><br><span class="line">            weight += e.weight();</span><br><span class="line">        <span class="keyword">return</span> weight;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Prim延迟实现的性能："><a href="#Prim延迟实现的性能：" class="headerlink" title="Prim延迟实现的性能："></a>Prim延迟实现的性能：</h4><ul>
+<li>空间：E（最多只能添加E条边）</li>
+<li>时间：ElogE（对E条边进行删除插入操作）</li>
+</ul>
+<h3 id="Prim即时实现"><a href="#Prim即时实现" class="headerlink" title="Prim即时实现"></a>Prim即时实现</h3><blockquote>
+<p>其实我们每次在保存优先队列时，更关注权重最小的新的边，这样可以使新顶点w与树的距离更小，从而形成最小生成树。</p>
+</blockquote>
+<p>与<code>LazyPrimMST</code>相比，将<code>marked[]</code>和<code>mst[]</code>替换为<code>distTo[]</code>和<code>edgeTo[]</code>。</p>
+<ul>
+<li>假设v不在树中，但是至少有一条边与树相连，将要添加。</li>
+<li><code>distTo[v]</code>：表示v与树的最短边的权重。</li>
+<li><code>edgeTo[v]</code>：表示v与树的最短边。</li>
+<li>所有像v这类顶点都被保存在索引优先队列<code>IndexMinPQ&lt;T&gt;</code>中，索引v关联的值即最短边权重。</li>
+</ul>
+<blockquote>
+<p>关于索引优先队列：使用索引<code>int</code>来对应值的一种优先队列.<br>性能：空间：V ，时间：logV</p>
+</blockquote>
+<figure class="highlight java"><figcaption><span>LazyPrimMST Prim延迟算法</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_3/LazyPrimMST.java">LazyPrimMST.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PrimMST</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Edge[] edgeTo;          <span class="comment">//距离树最近的边</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">double</span>[] distTo;        <span class="comment">//distTo[w]=edgTo[w].weight()</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span>[] marked;       <span class="comment">//如果v在树中，则为true。可以去除，用disTo[]是否等于Double.POSITIVE_INFINITY来判断</span></span><br><span class="line">    <span class="keyword">private</span> IndexMinPQ&lt;Double&gt; pq;  <span class="comment">//有效的横切边</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PrimMST</span><span class="params">(EdgeWeightedGraph G)</span> </span>&#123;</span><br><span class="line">        edgeTo = <span class="keyword">new</span> Edge[G.V()];</span><br><span class="line">        distTo = <span class="keyword">new</span> <span class="keyword">double</span>[G.V()];</span><br><span class="line">        marked = <span class="keyword">new</span> <span class="keyword">boolean</span>[G.V()];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> v = <span class="number">0</span>; v &lt; G.V(); v++)</span><br><span class="line">            distTo[v] = Double.POSITIVE_INFINITY;<span class="comment">//无限大</span></span><br><span class="line">        pq = <span class="keyword">new</span> IndexMinPQ&lt;&gt;(G.V());</span><br><span class="line"></span><br><span class="line">        distTo[<span class="number">0</span>] = <span class="number">0.0</span>;</span><br><span class="line">        pq.insert(<span class="number">0</span>, <span class="number">0.0</span>);   <span class="comment">//用顶点0、权重0初始化pq</span></span><br><span class="line">        <span class="keyword">while</span> (!pq.isEmpty())</span><br><span class="line">            visit(G, pq.delMin());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">visit</span><span class="params">(EdgeWeightedGraph G, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//将顶点v添加到树中，并更新数据</span></span><br><span class="line">        marked[v] = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">for</span> (Edge e : G.adj(v)) &#123;</span><br><span class="line">            <span class="keyword">int</span> w = e.other(v);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (marked[w]) <span class="keyword">continue</span>;    <span class="comment">//v-w失效</span></span><br><span class="line">            <span class="keyword">if</span> (e.weight() &lt; distTo[w]) &#123;</span><br><span class="line">                <span class="comment">//连接w和树的最佳边变为e，更新数据</span></span><br><span class="line">                edgeTo[w] = e;</span><br><span class="line">                distTo[w] = e.weight();</span><br><span class="line">                <span class="keyword">if</span> (pq.contains(w)) pq.changeKey(w, distTo[w]);</span><br><span class="line">                <span class="keyword">else</span> pq.insert(w, distTo[w]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;Edge&gt; <span class="title">edges</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Queue&lt;Edge&gt; edges = <span class="keyword">new</span> Queue&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Edge anEdgeTo : edgeTo)</span><br><span class="line">            <span class="keyword">if</span> (anEdgeTo != <span class="keyword">null</span>)</span><br><span class="line">                edges.enqueue(anEdgeTo);</span><br><span class="line">        <span class="keyword">return</span> edges;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">weight</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">double</span> weight = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">for</span> (Edge e : edges())</span><br><span class="line">            weight += e.weight();</span><br><span class="line">        <span class="keyword">return</span> weight;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Prim即时实现的性能："><a href="#Prim即时实现的性能：" class="headerlink" title="Prim即时实现的性能："></a>Prim即时实现的性能：</h4><ul>
+<li>空间：V（最多只能添加V个顶点）</li>
+<li>时间：ElogV（对E条边进行删除插入操作）</li>
+</ul>
+<h3 id="性能对比"><a href="#性能对比" class="headerlink" title="性能对比"></a>性能对比</h3><p>相比较两种实现而言，在巨型稀疏图中，性能在时间上差不多（logE ~ logV），但是空间上即时实现的算法变为了常数因子V。</p>
+<h2 id="Kruskal算法"><a href="#Kruskal算法" class="headerlink" title="Kruskal算法"></a>Kruskal算法</h2><p>在MST中，贪心算法的另一种选择就是每次只添加所有边中权重最小的边。</p>
+<blockquote>
+<p>Kruskal算法将边按照权重顺序处理。每条边都可以看作是一个树，然后逐个由森林合并成为一颗树，最终完成。</p>
+</blockquote>
+<p>在合并的时候，需要检查树与树是否已经连接。这里我们选用<code>WeightedQuickUnionUF</code>算法，来检查即将合并的两个树的两个顶点是否已经在同一个树中（判断树与树是否已经连接）。</p>
+<h3 id="WeightedQuickUnionUF算法"><a href="#WeightedQuickUnionUF算法" class="headerlink" title="WeightedQuickUnionUF算法"></a>WeightedQuickUnionUF算法</h3><p>是一种加权连接算法，可以用树的思想理解它，这里不做详细探讨，我会抽时间在别的篇章中介绍这一巧妙的算法。<a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter1_5/WeightedQuickUnionUF.java">算法实现</a></p>
+<p>它提供<code>connected(int v,int w)</code>来检查v和w是否连接。性能为 O(1)。</p>
+<p>它提供<code>union(int v,int w)</code>来连接v和w两点。性能为 O(logV)，V为总顶点数目。</p>
+<h3 id="Kruskal实现"><a href="#Kruskal实现" class="headerlink" title="Kruskal实现"></a>Kruskal实现</h3><p>比Prim算法更简洁，理解起来也更容易。</p>
+<figure class="highlight java"><figcaption><span>KruskalMST Kruskal算法</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_3/KruskalMST.java">KruskalMST.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KruskalMST</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Queue&lt;Edge&gt; mst;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">double</span> weight;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">KruskalMST</span><span class="params">(EdgeWeightedGraph G)</span> </span>&#123;</span><br><span class="line">        weight = <span class="number">0.0</span>;</span><br><span class="line">        mst = <span class="keyword">new</span> Queue&lt;&gt;();</span><br><span class="line">        MinPQ&lt;Edge&gt; pq = <span class="keyword">new</span> MinPQ&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Edge e : G.edges()) pq.insert(e);</span><br><span class="line">        WeightedQuickUnionUF uf = <span class="keyword">new</span> WeightedQuickUnionUF(G.V());</span><br><span class="line">        <span class="keyword">while</span> (!pq.isEmpty() &amp;&amp; mst.size() &lt; G.V() - <span class="number">1</span>) &#123;</span><br><span class="line">            Edge e = pq.delMin();</span><br><span class="line">            <span class="keyword">int</span> v = e.either(), w = e.other(v);</span><br><span class="line">            <span class="keyword">if</span> (uf.connected(v, w)) <span class="keyword">continue</span>;</span><br><span class="line">            uf.union(v, w);</span><br><span class="line">            mst.enqueue(e);</span><br><span class="line">            weight += e.weight();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;Edge&gt; <span class="title">edges</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mst;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">weight</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> weight;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h3><ul>
+<li>空间：E（最多添加E条最小权重的边）</li>
+<li>时间：ElogE（优先队列最多有E条边，每次操作最多2logE次比较）</li>
+</ul>
+<hr>
+<p><em>参考文献：《算法导论》 《Algorithms, 4th Edition》</em></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/09/02/Graph-MST/">图论——最小生成树</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
+        <p><span>发布时间:</span>2018-09-02, 18:10:21</p>
+        <p><span>最后更新:</span>2020-09-12, 16:12:15</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/09/02/Graph-MST/" title="图论——最小生成树">http://yif-hong.github.io/2018/09/02/Graph-MST/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yif-hong.github.io/2018/09/02/Graph-MST/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/09/02/Graph-SP/">
+                    图论——最短路径
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/09/02/Graph-Topological/">
+                    图论——拓扑排序
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%87%E5%88%86%E5%AE%9A%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">切分定理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A0%E6%9D%83%E6%97%A0%E5%90%91%E5%9B%BE"><span class="toc-number">2.</span> <span class="toc-text">加权无向图</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%A6%E6%9C%89%E6%9D%83%E9%87%8D%E7%9A%84%E8%BE%B9"><span class="toc-number">2.1.</span> <span class="toc-text">带有权重的边</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8A%A0%E6%9D%83%E6%97%A0%E5%90%91%E5%9B%BE"><span class="toc-number">2.2.</span> <span class="toc-text">实现加权无向图</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Prim%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">Prim算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">3.1.</span> <span class="toc-text">数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97"><span class="toc-number">3.1.1.</span> <span class="toc-text">优先队列</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97%E6%80%A7%E8%83%BD"><span class="toc-number">3.1.1.1.</span> <span class="toc-text">优先队列性能</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Prim%E5%BB%B6%E8%BF%9F%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.2.</span> <span class="toc-text">Prim延迟实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Prim%E5%BB%B6%E8%BF%9F%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%80%A7%E8%83%BD%EF%BC%9A"><span class="toc-number">3.2.1.</span> <span class="toc-text">Prim延迟实现的性能：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Prim%E5%8D%B3%E6%97%B6%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.3.</span> <span class="toc-text">Prim即时实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Prim%E5%8D%B3%E6%97%B6%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%80%A7%E8%83%BD%EF%BC%9A"><span class="toc-number">3.3.1.</span> <span class="toc-text">Prim即时实现的性能：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94"><span class="toc-number">3.4.</span> <span class="toc-text">性能对比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Kruskal%E7%AE%97%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">Kruskal算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WeightedQuickUnionUF%E7%AE%97%E6%B3%95"><span class="toc-number">4.1.</span> <span class="toc-text">WeightedQuickUnionUF算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kruskal%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.2.</span> <span class="toc-text">Kruskal实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%83%BD"><span class="toc-number">4.3.</span> <span class="toc-text">性能</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"图论——最小生成树　| Yif　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+        <div class="addthis_sharing_toolbox"></div>
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'http://yif-hong.github.io/2018/09/02/Graph-MST/';
+            this.page.identifier = '2018/09/02/Graph-MST/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//yifhong.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/09/02/Graph-SP/" title="上一篇: 图论——最短路径">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/09/02/Graph-Topological/" title="下一篇: 图论——拓扑排序">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/09/29/BaseSort/">排序算法——基于比较的算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/19/java-constructor/">当我们谈论Java构造器时，我们在讨论什么？</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/11/Volatile/">Volatile关键字解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-SP/">图论——最短路径</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-MST/">图论——最小生成树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-Topological/">图论——拓扑排序</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/Graph-general/">图论——基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/LeetcodeExercise/">Leetcode刷题记录（日更）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/HashTable/">散列表</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/RedBlackBST/">红黑树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/BST/">二叉树</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018-2020 Yif Hong
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-129136937-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Yif Hong" />
+
+
+
+<meta name="description" content="阅读此篇之前，需要了解图论的基础知识、拓扑排序、最小生成树。  最短路径的最直观应用就是在地图导航中，路口对应顶点，公路对应边，如果是单行道对应有向边，公路长短对应权重。抽象模型来看，就是从一个顶点到另一个顶点的最小成本路径——单点最短路径。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图论——最短路径">
+<meta property="og:url" content="http://yif-hong.github.io/2018/09/02/Graph-SP/index.html">
+<meta property="og:site_name" content="Yif">
+<meta property="og:description" content="阅读此篇之前，需要了解图论的基础知识、拓扑排序、最小生成树。  最短路径的最直观应用就是在地图导航中，路口对应顶点，公路对应边，如果是单行道对应有向边，公路长短对应权重。抽象模型来看，就是从一个顶点到另一个顶点的最小成本路径——单点最短路径。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-09-02T12:16:23.000Z">
+<meta property="article:modified_time" content="2020-09-12T08:12:15.278Z">
+<meta property="article:author" content="Yif Hong">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Graph">
+<meta name="twitter:card" content="summary">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Yif" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>图论——最短路径 | Yif</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bea9f3e6e421e5"></script>
+
+
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/"></a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:yifhongrui@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" rel="noopener" href="https://weibo.com/u/3852481088" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" rel="noopener" href="https://github.com/yif-hong" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" rel="noopener" href="https://www.zhihu.com/people/hong-yifeng-7" title="知乎"></a>
+                            
+                                <a class="fa 简书" target="_blank" rel="noopener" href="https://www.jianshu.com/u/b256468d0120" title="简书"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" rel="noopener" href="https://music.163.com/#/user/home?id=57389967" title="网易云音乐"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Concurrency/" rel="tag">Concurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Graph/" rel="tag">Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" target="_blank" rel="noopener" href="https://github.com/yif-hong">GitHub</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Alone</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页"></a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页"></a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:yifhongrui@gmail.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/u/3852481088" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/yif-hong" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/people/hong-yifeng-7" title="知乎"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="https://www.jianshu.com/u/b256468d0120" title="简书"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="https://music.163.com/#/user/home?id=57389967" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Graph-SP" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/09/02/Graph-SP/" class="article-date">
+      <time datetime="2018-09-02T12:16:23.000Z" itemprop="datePublished">2018-09-02</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      图论——最短路径
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Algorithm/">Algorithm</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Graph/" rel="tag">Graph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <blockquote>
+<p><em>阅读此篇之前，需要了解<a target="_blank" rel="noopener" href="http://yifhong.com/2018/09/01/Graph-general/">图论的基础知识</a>、<a target="_blank" rel="noopener" href="http://yifhong.com/2018/09/02/Graph-Topological">拓扑排序</a>、<a target="_blank" rel="noopener" href="http://yifhong.com/2018/09/02/Graph-MST">最小生成树</a>。</em></p>
+</blockquote>
+<p>最短路径的最直观应用就是在地图导航中，路口对应顶点，公路对应边，如果是单行道对应有向边，公路长短对应权重。抽象模型来看，就是<strong>从一个顶点到另一个顶点的最小成本路径</strong>——单点最短路径。</p>
+<a id="more"></a>
+
+<blockquote>
+<p>问题模型定义：</p>
+<ul>
+<li>边是有向的。（区别于最小生成树）</li>
+<li>边的权重不一定表示距离，更合适的应称为成本。（可以表示很多意义）</li>
+<li>边的权重为负会比较复杂，我们最后讨论为负的情况。</li>
+<li>最短路径都是简单路径。（不含有环）</li>
+<li>最短路径不唯一。</li>
+<li>可能存在自环或平行边。（分析时不考虑，算法可以处理）</li>
+</ul>
+</blockquote>
+<p>最短路径表示的是任意<strong>顶点v到起点s</strong>的权重都是最短路径，而最小生成树是顶点v到树的权重最小，两者要分清楚。</p>
+<h2 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h2><p>处理最短路径问题，需要加权有向边构成的加权有向图作为数据结构基础。</p>
+<h3 id="加权有向边"><a href="#加权有向边" class="headerlink" title="加权有向边"></a>加权有向边</h3><p>与<code>Edge</code>相比，把边的两个顶点重新明确为<code>from()</code>到<code>to()</code>，用以表示边的方向。</p>
+<figure class="highlight java"><figcaption><span>DirectedEdge 加权有向边</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_4/DirectedEdge.java">DirectedEdge.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DirectedEdge</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">DirectedEdge</span>&gt; </span>&#123;</span><br><span class="line">    ···</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> v;            <span class="comment">//边的起点</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> w;            <span class="comment">//边的终点</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">from</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> v;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">to</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> w;</span><br><span class="line">    &#125;</span><br><span class="line">    ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="加权有向图"><a href="#加权有向图" class="headerlink" title="加权有向图"></a>加权有向图</h3><p>与加权无向图<code>EdgeWeightedGraph</code>相比，将图中的边替换为加权有向边<code>DirectedEdge</code>，再稍作修改<code>addEdge()</code>即可。</p>
+<figure class="highlight java"><figcaption><span>EdgeWeightedDigraph 加权有向图</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_4/EdgeWeightedDigraph.java">EdgeWeightedDigraph.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EdgeWeightedDigraph</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> V;                <span class="comment">//顶点</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> E;                      <span class="comment">//边</span></span><br><span class="line">    <span class="keyword">private</span> Bag&lt;DirectedEdge&gt;[] adj;    <span class="comment">//邻接表</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">EdgeWeightedDigraph</span><span class="params">(<span class="keyword">int</span> V)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.V = V;</span><br><span class="line">        E = <span class="number">0</span>;</span><br><span class="line">        adj = (Bag&lt;DirectedEdge&gt;[]) <span class="keyword">new</span> Bag[V];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> v = <span class="number">0</span>; v &lt; V; v++)</span><br><span class="line">            adj[v] = <span class="keyword">new</span> Bag&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(DirectedEdge edge)</span> </span>&#123;</span><br><span class="line">        adj[edge.from()].add(edge);</span><br><span class="line">        E++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;DirectedEdge&gt; <span class="title">adj</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> adj[v];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;DirectedEdge&gt; <span class="title">edges</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Bag&lt;DirectedEdge&gt; bag = <span class="keyword">new</span> Bag&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> v = <span class="number">0</span>; v &lt; V; v++)</span><br><span class="line">            <span class="keyword">for</span> (DirectedEdge edge : adj[v])</span><br><span class="line">                bag.add(edge);</span><br><span class="line">        <span class="keyword">return</span> bag;</span><br><span class="line">    &#125;</span><br><span class="line">    ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="最短路径操作原理"><a href="#最短路径操作原理" class="headerlink" title="最短路径操作原理"></a>最短路径操作原理</h2><p>最短路径需要的数据结构很简单：</p>
+<ul>
+<li>最短路径树的边<code>edgeTo[]</code>。</li>
+<li>到达起点的距离<code>distTo[]</code>。</li>
+</ul>
+<h3 id="松弛"><a href="#松弛" class="headerlink" title="松弛"></a>松弛</h3><blockquote>
+<p>与最小生成树的Prim即时算法类似，在每次添加边的时候，会对原有的路径进行权重对比，如果出现更小的路径，则替换当前路径。这个操作就是松弛</p>
+</blockquote>
+<figure class="highlight java"><figcaption><span>relax(edge) 对边的放松</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">relax</span><span class="params">(DirectedEdge edge)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> v = edge.from(), w = edge.to();</span><br><span class="line">    <span class="keyword">if</span> (distTo[w] &gt; distTo[v] + edge.weight()) &#123;</span><br><span class="line">        distTo[w] = distTo[v] + edge.weight();</span><br><span class="line">        edgeTo[w] = edge;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在实际的实现中，实现松弛会放松<code>relax()</code>一个给定顶点指出的所有边。</p>
+<figure class="highlight java"><figcaption><span>relax(v) 对顶点的放松</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">relax</span><span class="params">(EdgeWeightedDigraph G, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (DirectedEdge edge : G.adj(v)) &#123;</span><br><span class="line">        <span class="keyword">int</span> w = edge.to();</span><br><span class="line">        <span class="keyword">if</span> (distTo[w] &gt; distTo[v] + edge.weight()) &#123;</span><br><span class="line">            distTo[w] = distTo[v] + edge.weight();</span><br><span class="line">            edgeTo[w] = edge;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Dijkstra算法"><a href="#Dijkstra算法" class="headerlink" title="Dijkstra算法"></a>Dijkstra算法</h2><blockquote>
+<p><strong>边的权重不能为负！</strong></p>
+</blockquote>
+<p>对于实现算法，我们仍需要<code>IndexMinPQ&lt;T&gt;</code>来保存即将被放松的顶点。算法的实现非常相似于Prim算法的即时实现，仅仅是替换为加权有向图来表示。</p>
+<p>证明请查看<a href="/2018/09/02/Graph-MST">Prim算法</a>。</p>
+<figure class="highlight java"><figcaption><span>DijkstraSP Dijkstra算法</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_4/DijkstraSP.java">DijkstraSP.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DijkstraSP</span> </span>&#123;</span><br><span class="line">    ···</span><br><span class="line">    <span class="keyword">private</span> DirectedEdge[] edgeTo;</span><br><span class="line">    <span class="keyword">private</span> IndexMinPQ&lt;Double&gt; pq;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DijkstraSP</span><span class="params">(EdgeWeightedDigraph G, <span class="keyword">int</span> s)</span> </span>&#123;</span><br><span class="line">        ···</span><br><span class="line">        distTo[s] = <span class="number">0.0</span>;</span><br><span class="line">        pq.insert(s, distTo[s]);</span><br><span class="line">        <span class="keyword">while</span> (!pq.isEmpty())</span><br><span class="line">            relax(G, pq.delMin());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">relax</span><span class="params">(EdgeWeightedDigraph G, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (v &lt; <span class="number">0</span> || v &gt;= distTo.length) <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException(<span class="string">&quot;vertex is illegal!&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (DirectedEdge edge : G.adj(v)) &#123;</span><br><span class="line">            <span class="keyword">int</span> w = edge.to();</span><br><span class="line">            <span class="keyword">if</span> (distTo[w] &gt; distTo[v] + edge.weight()) &#123;</span><br><span class="line">                distTo[w] = distTo[v] + edge.weight();</span><br><span class="line">                edgeTo[w] = edge;</span><br><span class="line">                <span class="keyword">if</span> (pq.contains(w)) pq.changeKey(w, distTo[w]);</span><br><span class="line">                <span class="keyword">else</span> pq.insert(w, distTo[w]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h3><ul>
+<li>空间：V</li>
+<li>时间：ElogV</li>
+</ul>
+<h4 id="给定两点之间的最短路径"><a href="#给定两点之间的最短路径" class="headerlink" title="给定两点之间的最短路径"></a>给定两点之间的最短路径</h4><p>直接用Dijkstra算法就可以，s-&gt;t，从起点s开始relax，直到优先队列取到t为止即可。</p>
+<h4 id="任意顶点对之间的最短路径"><a href="#任意顶点对之间的最短路径" class="headerlink" title="任意顶点对之间的最短路径"></a>任意顶点对之间的最短路径</h4><p>可以将每个元素都作为顶点构造<code>DijkstraSP</code>对象。</p>
+<p>性能：时间和空间均与 EVlogV 成正比。</p>
+<p>点击查看<a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_4/DijkstraAllPairsSP.java">算法实现</a>。</p>
+<h3 id="无环加权有向图中的最短路径算法"><a href="#无环加权有向图中的最短路径算法" class="headerlink" title="无环加权有向图中的最短路径算法"></a>无环加权有向图中的最短路径算法</h3><blockquote>
+<p><strong>通过拓扑排序来构成数据结构，按照拓扑排序的顺序依次放松各个顶点。</strong></p>
+</blockquote>
+<h4 id="算法优点"><a href="#算法优点" class="headerlink" title="算法优点"></a>算法优点</h4><ul>
+<li>能够在线性时间内处理单点最短路径问题。</li>
+<li>能够处理负权重边的情况。</li>
+<li>能够处理最长路径问题。</li>
+</ul>
+<h4 id="算法实现"><a href="#算法实现" class="headerlink" title="算法实现"></a>算法实现</h4><p>这里需要<code>Topological</code>拓扑排序接受<code>EdgeWeightedDigraph</code>和<code>DirectedEdge</code>为参数，检测有向环以及构建数据结构。<a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_4/EdgeWeightedDirectedCycle.java">寻找有向环的算法实现</a></p>
+<p><code>AcyclicSP</code>由Dijkstra算法改编而来，仅仅修改了初始化时放松顶点的顺序即可。</p>
+<figure class="highlight java"><figcaption><span>AcyclicSP 无环加权有向图的最短路径算法</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_4/AcyclicSP.java">AcyclicSP.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AcyclicSP</span> </span>&#123;</span><br><span class="line">    ···</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AcyclicSP</span><span class="params">(EdgeWeightedDigraph G, <span class="keyword">int</span> s)</span> </span>&#123;</span><br><span class="line">        ···</span><br><span class="line">        Topological top = <span class="keyword">new</span> Topological(G);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> v : top.order())</span><br><span class="line">            relax(G, v);</span><br><span class="line">    &#125;</span><br><span class="line">    ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="性能-1"><a href="#性能-1" class="headerlink" title="性能"></a>性能</h4><ul>
+<li>性能：</li>
+<li>时间：E+V，线性</li>
+</ul>
+<h4 id="无环加权有向图中的最长路径算法"><a href="#无环加权有向图中的最长路径算法" class="headerlink" title="无环加权有向图中的最长路径算法"></a>无环加权有向图中的最长路径算法</h4><p>通过最短路径改编即可，<a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_4/AcyclicLP.java">算法实现AcyclicLP</a>：</p>
+<ol>
+<li>将所有边<code>clone()</code>得到副本，再将副本的权重取相反数，即可。</li>
+<li>将<code>distTo[]</code>初始赋值变为<code>Double.NEGATIVE_INFINITY</code>，并改变<code>relax()</code>中判断不等式的方向，即可。</li>
+</ol>
+<h4 id="优先级限制下的并行任务调度"><a href="#优先级限制下的并行任务调度" class="headerlink" title="优先级限制下的并行任务调度"></a>优先级限制下的并行任务调度</h4><p>拓扑排序相对来说只是单个处理器执行问题处理，而并行任务调度则是多个处理器同时处理问题。</p>
+<blockquote>
+<p><strong>这个问题其实是求解最长路径的问题。</strong>（木桶短板效应）</p>
+<ul>
+<li><strong>性能：线性</strong></li>
+</ul>
+</blockquote>
+<h5 id="关键路径"><a href="#关键路径" class="headerlink" title="关键路径"></a>关键路径</h5><p>解决此类问题的算法称为关键路径，实现步骤如下：</p>
+<ol>
+<li>创建无环加权有向图。</li>
+<li>所有任务的起始为起点s，指向每个先行任务的开始，终点为t，每个最后执行任务的结束指向t。</li>
+<li>任务作为边，边的权重为每个任务的花费时间，优先级<code>v -&gt; w</code>为任务的结束点指向下一个任务的起始点。</li>
+<li>每个任务预计的花费时间为任务自身的权重加上任务起点距离起点s的权重。这样就转化为最长路径的问题。</li>
+</ol>
+<figure class="highlight java"><figcaption><span>CPM 关键路径的一种实现</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_4/CPM.java">CPM.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CPM</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> N = StdIn.readInt();</span><br><span class="line">        StdIn.readLine();</span><br><span class="line">        EdgeWeightedDigraph G = <span class="keyword">new</span> EdgeWeightedDigraph(<span class="number">2</span> * N + <span class="number">2</span>);</span><br><span class="line">        <span class="keyword">int</span> s = N * <span class="number">2</span>, t = N * <span class="number">2</span> + <span class="number">1</span>;<span class="comment">//s起点，t终点，0~2N所有顶点</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">            String[] a = StdIn.readLine().split(<span class="string">&quot;\\s+&quot;</span>);</span><br><span class="line">            <span class="keyword">double</span> duration = Double.parseDouble(a[<span class="number">0</span>]);</span><br><span class="line">            G.addEdge(<span class="keyword">new</span> DirectedEdge(i, i + N, duration));</span><br><span class="line">            G.addEdge(<span class="keyword">new</span> DirectedEdge(s, i, <span class="number">0.0</span>));</span><br><span class="line">            G.addEdge(<span class="keyword">new</span> DirectedEdge(i + N, t, <span class="number">0.0</span>));</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; a.length; j++) &#123;</span><br><span class="line">                <span class="keyword">int</span> successor = Integer.parseInt(a[j]);</span><br><span class="line">                G.addEdge(<span class="keyword">new</span> DirectedEdge(i + N, successor, <span class="number">0.0</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        AcyclicLP lp = <span class="keyword">new</span> AcyclicLP(G, s);</span><br><span class="line">        System.out.println(<span class="string">&quot;Start times:&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">            System.out.printf(<span class="string">&quot;%d: %5.1f\n&quot;</span>, i, lp.distTo(i));</span><br><span class="line">        System.out.printf(<span class="string">&quot;Finish time: %5.1f\n&quot;</span>, lp.distTo(t));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="相对最后期限限制下的并行任务调度"><a href="#相对最后期限限制下的并行任务调度" class="headerlink" title="相对最后期限限制下的并行任务调度"></a>相对最后期限限制下的并行任务调度</h4><blockquote>
+<p><strong>其实这是一个最短路径问题。</strong></p>
+</blockquote>
+<h3 id="一般加权有向图中的最短路径"><a href="#一般加权有向图中的最短路径" class="headerlink" title="一般加权有向图中的最短路径"></a>一般加权有向图中的最短路径</h3><p>此时我们需要探讨负权重边带来的情况。</p>
+<blockquote>
+<p>负权重环，指一个总权重之和为负的环。</p>
+</blockquote>
+<p><strong>一旦出现负权重环，则不存在最短路径。</strong></p>
+<blockquote>
+<p>因为可以在负权重环中无限循环从而产生任意小的最短路径。因此我们需要s到v的有向路径上的任意顶点都不存在于任何负权重环中。</p>
+</blockquote>
+<p>于是实现算法需要解决以下问题：</p>
+<ul>
+<li>负权重环的检测。</li>
+<li>负权重环不可达时的最短路径问题。</li>
+</ul>
+<h4 id="Bellman-Ford算法"><a href="#Bellman-Ford算法" class="headerlink" title="Bellman-Ford算法"></a>Bellman-Ford算法</h4><h5 id="检测负权重环"><a href="#检测负权重环" class="headerlink" title="检测负权重环"></a>检测负权重环</h5><p>类似于之前<a href="/2018/09/02/Graph-Topological">拓扑排序</a>中寻找有向环的检测，我们这里也用一个<code>onQ[]</code>来记录顶点是否在放松过的栈上，防止重复加入队列。</p>
+<figure class="highlight java"><figcaption><span>relax(G,v) Bellman-Ford中检测负权重环</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">relax</span><span class="params">(EdgeWeightedDigraph G, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (DirectedEdge edge : G.adj(v)) &#123;</span><br><span class="line">        <span class="keyword">int</span> w = edge.to();</span><br><span class="line">        <span class="keyword">if</span> (distTo[w] &gt; distTo[v] + edge.weight()) &#123;</span><br><span class="line">            distTo[w] = distTo[v] + edge.weight();</span><br><span class="line">            edgeTo[w] = edge;</span><br><span class="line">            <span class="keyword">if</span> (!onQ[w]) &#123;</span><br><span class="line">                queue.enqueue(w);</span><br><span class="line">                onQ[w] = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (cost++ % G.V() == <span class="number">0</span>)</span><br><span class="line">            findNegativeCycle();<span class="comment">//周期性寻找负权重环</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="寻找负权重环"><a href="#寻找负权重环" class="headerlink" title="寻找负权重环"></a>寻找负权重环</h5><p>这里采用<code>EdgeWeightedDirectedCycle</code>(最短路径中拓扑排序)来检测加权有向环。</p>
+<figure class="highlight java"><figcaption><span>findNegativeCycle() 寻找负权重环</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">findNegativeCycle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> V = edgeTo.length;</span><br><span class="line">    EdgeWeightedDigraph spt;</span><br><span class="line">    spt = <span class="keyword">new</span> EdgeWeightedDigraph(V);</span><br><span class="line">    <span class="keyword">for</span> (DirectedEdge edge : edgeTo)</span><br><span class="line">        <span class="keyword">if</span> (edge != <span class="keyword">null</span>)</span><br><span class="line">            spt.addEdge(edge);</span><br><span class="line">    EdgeWeightedDirectedCycle finder = <span class="keyword">new</span> EdgeWeightedDirectedCycle(spt);</span><br><span class="line">    cycle = finder.cycle();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="算法实现-1"><a href="#算法实现-1" class="headerlink" title="算法实现"></a>算法实现</h5><figure class="highlight java"><figcaption><span>BellmanFordSP 基于队列的Bellman-Ford算法</span><a target="_blank" rel="noopener" href="https://github.com/yif-hong/Algorithms-4th-Exercise/blob/master/src/exercise/chapter4_4/BellmanFordSP.java">BellmanFordSP.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BellmanFordSP</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">double</span>[] distTo;                <span class="comment">//从起点到某个顶点的路径长度</span></span><br><span class="line">    <span class="keyword">private</span> DirectedEdge[] edgeTo;          <span class="comment">//从起点到某个顶点的最后一条边</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span>[] onQ;                  <span class="comment">//该顶点是否存在于队列中</span></span><br><span class="line">    <span class="keyword">private</span> Queue&lt;Integer&gt; queue;           <span class="comment">//正在被放松的顶点</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> cost;                       <span class="comment">//relax() 的调用次数</span></span><br><span class="line">    <span class="keyword">private</span> Iterable&lt;DirectedEdge&gt; cycle;   <span class="comment">//edgeTo[] 中是否还有负权重环</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BellmanFordSP</span><span class="params">(EdgeWeightedDigraph G, <span class="keyword">int</span> s)</span> </span>&#123;</span><br><span class="line">        distTo = <span class="keyword">new</span> <span class="keyword">double</span>[G.V()];</span><br><span class="line">        edgeTo = <span class="keyword">new</span> DirectedEdge[G.V()];</span><br><span class="line">        onQ = <span class="keyword">new</span> <span class="keyword">boolean</span>[G.V()];</span><br><span class="line">        queue = <span class="keyword">new</span> Queue&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> v = <span class="number">0</span>; v &lt; G.V(); v++)</span><br><span class="line">            distTo[v] = Double.POSITIVE_INFINITY;</span><br><span class="line">        distTo[s] = <span class="number">0.0</span>;</span><br><span class="line">        onQ[s] = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">while</span> (!queue.isEmpty() &amp;&amp; !hasNegativeCycle()) &#123;</span><br><span class="line">            <span class="keyword">int</span> v = queue.dequeue();</span><br><span class="line">            onQ[v] = <span class="keyword">false</span>;</span><br><span class="line">            relax(G, v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">relax</span><span class="params">(EdgeWeightedDigraph G, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        ···</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">findNegativeCycle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ···</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterable&lt;DirectedEdge&gt; <span class="title">negativeCycle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cycle;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNegativeCycle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cycle != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="性能-2"><a href="#性能-2" class="headerlink" title="性能"></a>性能</h5><ul>
+<li>空间：V</li>
+<li>时间：EV（放松E条边，重复V轮）</li>
+</ul>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/09/02/Graph-SP/">图论——最短路径</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
+        <p><span>发布时间:</span>2018-09-02, 20:16:23</p>
+        <p><span>最后更新:</span>2020-09-12, 16:12:15</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/09/02/Graph-SP/" title="图论——最短路径">http://yif-hong.github.io/2018/09/02/Graph-SP/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yif-hong.github.io/2018/09/02/Graph-SP/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/09/11/Volatile/">
+                    Volatile关键字解析
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/09/02/Graph-MST/">
+                    图论——最小生成树
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">数据模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A0%E6%9D%83%E6%9C%89%E5%90%91%E8%BE%B9"><span class="toc-number">1.1.</span> <span class="toc-text">加权有向边</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A0%E6%9D%83%E6%9C%89%E5%90%91%E5%9B%BE"><span class="toc-number">1.2.</span> <span class="toc-text">加权有向图</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E6%93%8D%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">最短路径操作原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%BE%E5%BC%9B"><span class="toc-number">2.1.</span> <span class="toc-text">松弛</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dijkstra%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">Dijkstra算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%83%BD"><span class="toc-number">3.1.</span> <span class="toc-text">性能</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%99%E5%AE%9A%E4%B8%A4%E7%82%B9%E4%B9%8B%E9%97%B4%E7%9A%84%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84"><span class="toc-number">3.1.1.</span> <span class="toc-text">给定两点之间的最短路径</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%BB%E6%84%8F%E9%A1%B6%E7%82%B9%E5%AF%B9%E4%B9%8B%E9%97%B4%E7%9A%84%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84"><span class="toc-number">3.1.2.</span> <span class="toc-text">任意顶点对之间的最短路径</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E7%8E%AF%E5%8A%A0%E6%9D%83%E6%9C%89%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.</span> <span class="toc-text">无环加权有向图中的最短路径算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E4%BC%98%E7%82%B9"><span class="toc-number">3.2.1.</span> <span class="toc-text">算法优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.2.2.</span> <span class="toc-text">算法实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD-1"><span class="toc-number">3.2.3.</span> <span class="toc-text">性能</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E7%8E%AF%E5%8A%A0%E6%9D%83%E6%9C%89%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.4.</span> <span class="toc-text">无环加权有向图中的最长路径算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7%E9%99%90%E5%88%B6%E4%B8%8B%E7%9A%84%E5%B9%B6%E8%A1%8C%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6"><span class="toc-number">3.2.5.</span> <span class="toc-text">优先级限制下的并行任务调度</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E8%B7%AF%E5%BE%84"><span class="toc-number">3.2.5.1.</span> <span class="toc-text">关键路径</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B8%E5%AF%B9%E6%9C%80%E5%90%8E%E6%9C%9F%E9%99%90%E9%99%90%E5%88%B6%E4%B8%8B%E7%9A%84%E5%B9%B6%E8%A1%8C%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6"><span class="toc-number">3.2.6.</span> <span class="toc-text">相对最后期限限制下的并行任务调度</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E8%88%AC%E5%8A%A0%E6%9D%83%E6%9C%89%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84"><span class="toc-number">3.3.</span> <span class="toc-text">一般加权有向图中的最短路径</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Bellman-Ford%E7%AE%97%E6%B3%95"><span class="toc-number">3.3.1.</span> <span class="toc-text">Bellman-Ford算法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E8%B4%9F%E6%9D%83%E9%87%8D%E7%8E%AF"><span class="toc-number">3.3.1.1.</span> <span class="toc-text">检测负权重环</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%BB%E6%89%BE%E8%B4%9F%E6%9D%83%E9%87%8D%E7%8E%AF"><span class="toc-number">3.3.1.2.</span> <span class="toc-text">寻找负权重环</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0-1"><span class="toc-number">3.3.1.3.</span> <span class="toc-text">算法实现</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%A7%E8%83%BD-2"><span class="toc-number">3.3.1.4.</span> <span class="toc-text">性能</span></a></li></ol></li></ol></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"图论——最短路径　| Yif　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+        <div class="addthis_sharing_toolbox"></div>
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'http://yif-hong.github.io/2018/09/02/Graph-SP/';
+            this.page.identifier = '2018/09/02/Graph-SP/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//yifhong.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/09/11/Volatile/" title="上一篇: Volatile关键字解析">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/09/02/Graph-MST/" title="下一篇: 图论——最小生成树">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/09/29/BaseSort/">排序算法——基于比较的算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/19/java-constructor/">当我们谈论Java构造器时，我们在讨论什么？</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/11/Volatile/">Volatile关键字解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-SP/">图论——最短路径</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-MST/">图论——最小生成树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-Topological/">图论——拓扑排序</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/Graph-general/">图论——基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/LeetcodeExercise/">Leetcode刷题记录（日更）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/HashTable/">散列表</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/RedBlackBST/">红黑树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/BST/">二叉树</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018-2020 Yif Hong
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 6;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-129136937-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
