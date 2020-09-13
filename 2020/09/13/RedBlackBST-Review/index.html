@@ -15,15 +15,15 @@
 
 
 
-<meta name="description" content="HeapSort ReviewThis is a review about HeapSort by CLRS#3 &amp; Algorithm#4.">
+<meta name="description" content="RedBlackBST ReviewThis is a review about RedBlackBST by CLRS#3 &amp; Algorithm#4.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="HeapSort Review">
-<meta property="og:url" content="http://yif-hong.github.io/2020/09/13/HeapSort-Review/index.html">
+<meta property="og:title" content="RedBlackBST Review">
+<meta property="og:url" content="http://yif-hong.github.io/2020/09/13/RedBlackBST-Review/index.html">
 <meta property="og:site_name" content="Yif">
-<meta property="og:description" content="HeapSort ReviewThis is a review about HeapSort by CLRS#3 &amp; Algorithm#4.">
+<meta property="og:description" content="RedBlackBST ReviewThis is a review about RedBlackBST by CLRS#3 &amp; Algorithm#4.">
 <meta property="og:locale">
-<meta property="article:published_time" content="2020-09-13T02:00:00.000Z">
-<meta property="article:modified_time" content="2020-09-13T02:24:15.318Z">
+<meta property="article:published_time" content="2020-09-13T11:00:00.000Z">
+<meta property="article:modified_time" content="2020-09-13T11:10:36.384Z">
 <meta property="article:author" content="Yif Hong">
 <meta property="article:tag" content="review">
 <meta name="twitter:card" content="summary">
@@ -60,7 +60,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>HeapSort Review | Yif</title>
+<title>RedBlackBST Review | Yif</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -285,11 +285,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-HeapSort-Review" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-RedBlackBST-Review" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2020/09/13/HeapSort-Review/" class="article-date">
-      <time datetime="2020-09-13T02:00:00.000Z" itemprop="datePublished">2020-09-13</time>
+      <a href="/2020/09/13/RedBlackBST-Review/" class="article-date">
+      <time datetime="2020-09-13T11:00:00.000Z" itemprop="datePublished">2020-09-13</time>
 </a>
 
 
@@ -304,7 +304,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      HeapSort Review
+      RedBlackBST Review
     </h1>
   
 
@@ -329,28 +329,31 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="HeapSort-Review"><a href="#HeapSort-Review" class="headerlink" title="HeapSort Review"></a>HeapSort Review</h1><p>This is a review about HeapSort by CLRS#3 &amp; Algorithm#4.</p>
+        <h1 id="RedBlackBST-Review"><a href="#RedBlackBST-Review" class="headerlink" title="RedBlackBST Review"></a>RedBlackBST Review</h1><p>This is a review about RedBlackBST by CLRS#3 &amp; Algorithm#4.</p>
 <a id="more"></a>
 
 <h2 id="Complexity"><a href="#Complexity" class="headerlink" title="Complexity"></a>Complexity</h2><ul>
-<li>Average<br>$$<br>T(n) = \Theta(n\lg{n})<br>$$</li>
+<li>Average function<br>$$<br>T(n) = \Theta(2\lg{n})<br>$$</li>
 </ul>
-<h2 id="lt-CLRS-3-gt"><a href="#lt-CLRS-3-gt" class="headerlink" title="&lt;CLRS#3&gt;"></a>&lt;CLRS#3&gt;</h2><h3 id="MAX-HEAPIFY"><a href="#MAX-HEAPIFY" class="headerlink" title="MAX_HEAPIFY"></a>MAX_HEAPIFY</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">MAX_HEAPIFY(A,i):</span><br><span class="line">	l &#x3D; LEFT(A,i)</span><br><span class="line">	r &#x3D; RIGHT(A,i)</span><br><span class="line">	if l &lt;&#x3D; A.heap-size &amp;&amp; A[l] &gt; A[i]</span><br><span class="line">		largest &#x3D; l</span><br><span class="line">	else largest &#x3D; i</span><br><span class="line">	if r &lt;&#x3D; A.heap-size &amp;&amp; A[l] &gt; A[largest]</span><br><span class="line">		largest &#x3D; r</span><br><span class="line">	if largest !&#x3D; i</span><br><span class="line">		exchange A[i] with A[largest]</span><br><span class="line">		MAX_HEAPIFY(A,largest)</span><br></pre></td></tr></table></figure>
+<h2 id="lt-CLRS-3-gt"><a href="#lt-CLRS-3-gt" class="headerlink" title="&lt;CLRS#3&gt;"></a>&lt;CLRS#3&gt;</h2><h2 id="lt-Algorithm-4-gt"><a href="#lt-Algorithm-4-gt" class="headerlink" title="&lt;Algorithm#4&gt;"></a>&lt;Algorithm#4&gt;</h2><h3 id="RedBlackBST"><a href="#RedBlackBST" class="headerlink" title="RedBlackBST"></a>RedBlackBST</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span>:</span></span><br><span class="line">	size:<span class="number">1</span></span><br><span class="line">	color:BLACK</span><br><span class="line">	Node left,right</span><br><span class="line">  key</span><br><span class="line">  val</span><br><span class="line">    </span><br><span class="line">size(x):</span><br><span class="line">	<span class="keyword">if</span> x == NIL</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	<span class="keyword">return</span> size(x.left) + size(x.right) + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">isRed(x):</span><br><span class="line">	<span class="keyword">if</span> x == NIL</span><br><span class="line">    <span class="keyword">return</span> False</span><br><span class="line">  <span class="keyword">return</span> x.color == RED</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">rotateLeft(x):</span><br><span class="line">	y &#x3D; x.right</span><br><span class="line">	x.right &#x3D; y.left</span><br><span class="line">	y.left &#x3D; x</span><br><span class="line">	y.color &#x3D; y.left.color</span><br><span class="line">	y.left.color &#x3D; RED</span><br><span class="line">	y.size &#x3D; x.size</span><br><span class="line">	x.size &#x3D; 1 + size(x.left) + size(x.right)</span><br><span class="line">	return y</span><br><span class="line">	</span><br><span class="line">rotateRight(x):</span><br><span class="line">	y &#x3D; x.left</span><br><span class="line">	x.left &#x3D; y.right</span><br><span class="line">	y.right &#x3D; x</span><br><span class="line">	y.color &#x3D; y.right.color</span><br><span class="line">	y.right.color &#x3D; RED</span><br><span class="line">	y.size &#x3D; x.size</span><br><span class="line">	x.size &#x3D; 1 + size(x.left) + size(x.right)</span><br><span class="line">	return y</span><br><span class="line">	</span><br><span class="line">flipColors(x):</span><br><span class="line">	if x !&#x3D; NIL and x.left !&#x3D; NIL and x.right !&#x3D; NIL</span><br><span class="line">		x.color &#x3D; !x.color</span><br><span class="line">		x.left.color &#x3D; !x.left.color</span><br><span class="line">		x.right.color &#x3D; !x.right.color</span><br><span class="line">	return x</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">put(x,key,val):</span><br><span class="line">	if x &#x3D;&#x3D; NIL</span><br><span class="line">		return new Node(k,val,1,RED)</span><br><span class="line">	if key &lt; x.key</span><br><span class="line">		put(x.left,key,val)</span><br><span class="line">	elif key &gt; x.key</span><br><span class="line">		put(x.right,key,val)</span><br><span class="line">	else x.val &#x3D; val</span><br><span class="line">	x &#x3D; balance(x)</span><br><span class="line">	return x</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">balance(x):</span><br><span class="line">	if !x.left.isRed() and x.right.isRed()</span><br><span class="line">		x &#x3D; rotateLeft(x)</span><br><span class="line">	if x.left.isRed() and x.left.left.isRed()</span><br><span class="line">		x &#x3D; rotateRight(x)</span><br><span class="line">	if x.left.isRed() and x.right.isRed()</span><br><span class="line">		x &#x3D; flipColor(x)</span><br><span class="line">	x.size &#x3D; size(x.left) + size(x.right) + 1</span><br><span class="line">	return x</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// assume that x is red, x.left and x.left.left is black</span></span><br><span class="line"><span class="comment">// make x.left or sub-node of x.left color to red</span></span><br><span class="line">moveRedLeft(x):</span><br><span class="line">	flipColor(x)</span><br><span class="line">	<span class="keyword">if</span> x.right.left.isRed()</span><br><span class="line">		x.right = rotateRight(x.right)</span><br><span class="line">    x = rotateLeft(x)</span><br><span class="line">  <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">deleteMin(x):</span><br><span class="line">	if x.left &#x3D;&#x3D; NIL</span><br><span class="line">		return NIL</span><br><span class="line">	if !x.left.isRed() and !x.left.left.isRed()</span><br><span class="line">		x &#x3D; moveRedLeft(x)</span><br><span class="line">	x.left &#x3D; deleteMin(x.left)</span><br><span class="line">	x &#x3D; balance(x)</span><br><span class="line">	return x</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// assume that x is red, x.right and x.right.left is black</span></span><br><span class="line"><span class="comment">// make x.right or sub-node of x.right color to red</span></span><br><span class="line">moveRedRight(x):</span><br><span class="line">	flipColor(x)</span><br><span class="line">	<span class="keyword">if</span> !x.left.left.isRed</span><br><span class="line">		x = rotateRight(x)</span><br><span class="line">	<span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">deleteMax(x):</span><br><span class="line">	if x.left.isRed()</span><br><span class="line">		x &#x3D; rotateRight(x)</span><br><span class="line">	if x &#x3D;&#x3D; NIL</span><br><span class="line">		return NIL</span><br><span class="line">	if !x.right.isRed() and !x.right.left.isRed()</span><br><span class="line">		x &#x3D; moveRedRight(x)</span><br><span class="line">	x.right &#x3D; deleteMax(x.right)</span><br><span class="line">	x &#x3D; balance(x)</span><br><span class="line">	return x</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// turn to delete deleteMin or deleteMax</span></span><br><span class="line"><span class="keyword">delete</span>(x, key):</span><br><span class="line">	<span class="keyword">if</span> key &lt; x.key</span><br><span class="line">    <span class="keyword">if</span> !x.left.isRed() <span class="keyword">and</span> !x.left.left.isRed()</span><br><span class="line">      x = moveLeftRed(x)</span><br><span class="line">     x.left = <span class="keyword">delete</span>(x.left,key)</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="keyword">if</span> x.left.isRed()</span><br><span class="line">      x = rotateRight(x)</span><br><span class="line">    <span class="keyword">if</span> key == x.key <span class="keyword">and</span> x.right == NIL</span><br><span class="line">      <span class="keyword">return</span> NIL</span><br><span class="line">    <span class="keyword">if</span> !x.right.isRed() <span class="keyword">and</span> !x.right.left.isRed()</span><br><span class="line">      x = moveRedRight(x)</span><br><span class="line">    <span class="keyword">if</span> key == x.key</span><br><span class="line">      minKey = min(x.right)</span><br><span class="line">      minVal = minKey.val</span><br><span class="line">      x.val = get(x.right, minVal)</span><br><span class="line">      x.key = minKey</span><br><span class="line">      x.right = deleteMin(x.right)</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      x.right = <span class="keyword">delete</span>(x.right,key)</span><br><span class="line">  x = balance(x)</span><br><span class="line">  <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
 
 
-
-<h3 id="BuildMaxHeap"><a href="#BuildMaxHeap" class="headerlink" title="BuildMaxHeap"></a>BuildMaxHeap</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">BuildMaxHeap(A):</span><br><span class="line">	A.heap-size &#x3D; A.length</span><br><span class="line">	for i &#x3D; A.length&#x2F;2 to 1</span><br><span class="line">		MAX_HEAPIFY(A,i)</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-<h2 id="lt-Algorithm-4-gt"><a href="#lt-Algorithm-4-gt" class="headerlink" title="&lt;Algorithm#4&gt;"></a>&lt;Algorithm#4&gt;</h2><h3 id="HeapSort"><a href="#HeapSort" class="headerlink" title="HeapSort"></a>HeapSort</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">swim(A,k):</span><br><span class="line">	<span class="keyword">if</span> k &gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> A[k] &gt; A[k/<span class="number">2</span>]</span><br><span class="line">      exchange A[k] with A[k/<span class="number">2</span>]</span><br><span class="line">      swim(A,k/<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sink(A,k):</span><br><span class="line">	<span class="keyword">if</span> k &lt; A.length/<span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> A[k] &lt; A[k*<span class="number">2</span>]</span><br><span class="line">      	exchange A[k] with A[k*<span class="number">2</span>]</span><br><span class="line">      	sink(a,k*<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BuildMaxHeap(A):</span><br><span class="line">	for i &#x3D; A.length&#x2F;2 to 1</span><br><span class="line">		sink(A,i)</span><br></pre></td></tr></table></figure>
 
 
       
@@ -360,13 +363,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2020/09/13/HeapSort-Review/">HeapSort Review</a></p>
+        <p><span>本文标题:</span><a href="/2020/09/13/RedBlackBST-Review/">RedBlackBST Review</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
-        <p><span>发布时间:</span>2020-09-13, 10:00:00</p>
-        <p><span>最后更新:</span>2020-09-13, 10:24:15</p>
+        <p><span>发布时间:</span>2020-09-13, 19:00:00</p>
+        <p><span>最后更新:</span>2020-09-13, 19:10:36</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2020/09/13/HeapSort-Review/" title="HeapSort Review">http://yif-hong.github.io/2020/09/13/HeapSort-Review/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://yif-hong.github.io/2020/09/13/HeapSort-Review/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2020/09/13/RedBlackBST-Review/" title="RedBlackBST Review">http://yif-hong.github.io/2020/09/13/RedBlackBST-Review/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yif-hong.github.io/2020/09/13/RedBlackBST-Review/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -378,16 +381,10 @@
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2020/09/13/BinarySearchTree-Review/">
-                    BinarySearchTree Review
-                </a>
-            </div>
-        
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2020/09/12/MergeSort-Review/">
-                    MergeSort Review
+                <a href="/2020/09/13/BinarySearchTree-Review/">
+                    BinarySearchTree Review
                 </a>
             </div>
         
@@ -399,7 +396,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HeapSort-Review"><span class="toc-number">1.</span> <span class="toc-text">HeapSort Review</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Complexity"><span class="toc-number">1.1.</span> <span class="toc-text">Complexity</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lt-CLRS-3-gt"><span class="toc-number">1.2.</span> <span class="toc-text">&lt;CLRS#3&gt;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MAX-HEAPIFY"><span class="toc-number">1.2.1.</span> <span class="toc-text">MAX_HEAPIFY</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BuildMaxHeap"><span class="toc-number">1.2.2.</span> <span class="toc-text">BuildMaxHeap</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lt-Algorithm-4-gt"><span class="toc-number">1.3.</span> <span class="toc-text">&lt;Algorithm#4&gt;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HeapSort"><span class="toc-number">1.3.1.</span> <span class="toc-text">HeapSort</span></a></li></ol></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RedBlackBST-Review"><span class="toc-number">1.</span> <span class="toc-text">RedBlackBST Review</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Complexity"><span class="toc-number">1.1.</span> <span class="toc-text">Complexity</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lt-CLRS-3-gt"><span class="toc-number">1.2.</span> <span class="toc-text">&lt;CLRS#3&gt;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lt-Algorithm-4-gt"><span class="toc-number">1.3.</span> <span class="toc-text">&lt;Algorithm#4&gt;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RedBlackBST"><span class="toc-number">1.3.1.</span> <span class="toc-text">RedBlackBST</span></a></li></ol></li></ol></li></ol>
         
     </div>
     <style>
@@ -435,7 +432,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"HeapSort Review　| Yif　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"RedBlackBST Review　| Yif　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -456,8 +453,8 @@
     <div id="disqus_thread"></div>
     <script>
         var disqus_config = function(){
-            this.page.url = 'http://yif-hong.github.io/2020/09/13/HeapSort-Review/';
-            this.page.identifier = '2020/09/13/HeapSort-Review/';
+            this.page.url = 'http://yif-hong.github.io/2020/09/13/RedBlackBST-Review/';
+            this.page.identifier = '2020/09/13/RedBlackBST-Review/';
         };
         var loadComment = function(){
             var d = document, s = d.createElement('script');
@@ -479,15 +476,13 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2020/09/13/BinarySearchTree-Review/" title="上一篇: BinarySearchTree Review">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2020/09/12/MergeSort-Review/" title="下一篇: MergeSort Review">
+            <a href="/2020/09/13/BinarySearchTree-Review/" title="下一篇: BinarySearchTree Review">
                 <i class="fa fa-angle-right"></i>
             </a>
         
