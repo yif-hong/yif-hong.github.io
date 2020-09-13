@@ -39,16 +39,16 @@
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390810-ea974ad96c9b69d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390810-650599874c1b4579.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390810-77e15315209a64f7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390810-206506759cf481b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390810-f521bd0ba17be3fb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390810-542396038548741b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390810-eaf02c8a1188e525.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390810-b48392e589443cec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390810-0e611899a6bbaee0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390810-5196626cfe0f8042.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390810-9abf46a548a7b9f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://yif-hong.github.io/2018/08/19/RedBlackBST/1.png">
+<meta property="og:image" content="http://yif-hong.github.io/2018/08/19/RedBlackBST/2.png">
+<meta property="og:image" content="http://yif-hong.github.io/2018/08/19/RedBlackBST/3.png">
+<meta property="og:image" content="http://yif-hong.github.io/2018/08/19/RedBlackBST/4.png">
+<meta property="og:image" content="http://yif-hong.github.io/2018/08/19/RedBlackBST/5.png">
+<meta property="og:image" content="http://yif-hong.github.io/2018/08/19/RedBlackBST/6.png">
+<meta property="og:image" content="http://yif-hong.github.io/2018/08/19/RedBlackBST/7.png">
+<meta property="og:image" content="http://yif-hong.github.io/2018/08/19/RedBlackBST/8.png">
 <meta property="article:published_time" content="2018-08-18T17:23:51.000Z">
-<meta property="article:modified_time" content="2020-09-12T08:12:15.280Z">
+<meta property="article:modified_time" content="2020-09-13T09:49:11.444Z">
 <meta property="article:author" content="Yif Hong">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="Java">
@@ -509,9 +509,10 @@
 <p><img src="https://upload-images.jianshu.io/upload_images/8390810-77e15315209a64f7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="变换后"></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">flipColors</span><span class="params">(Node h)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (h == <span class="keyword">null</span> || h.left == <span class="keyword">null</span> || h.right == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">    h.color = !h.color;</span><br><span class="line">    h.left.color = !h.left.color;</span><br><span class="line">    h.right.color = !h.right.color;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h5 id="2-新插入的键最小："><a href="#2-新插入的键最小：" class="headerlink" title="2. 新插入的键最小："></a>2. 新插入的键最小：</h5><p>插入左子结点的子结点 x.left.left，则此时形成连续的左链接都是红色(A 插入 B-C ，形成 A-B-C)。<br>这时候需要我们先对C进行**右旋 <code>rotateRight(C)</code>**，然后就形成了上面1.的情况。<br><img src="https://upload-images.jianshu.io/upload_images/8390810-206506759cf481b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="旋转后flip"></p>
+<h5 id="2-新插入的键最小："><a href="#2-新插入的键最小：" class="headerlink" title="2. 新插入的键最小："></a>2. 新插入的键最小：</h5><p>插入左子结点的子结点 x.left.left，则此时形成连续的左链接都是红色(A 插入 B-C ，形成 A-B-C)。<br>这时候需要我们先对C进行**右旋 <code>rotateRight(C)</code>**，然后就形成了上面1.的情况。</p>
+<p><img src="/2018/08/19/RedBlackBST/1.png" alt="旋转后flip"></p>
 <h5 id="3-新插入的键大小在两个键之间："><a href="#3-新插入的键大小在两个键之间：" class="headerlink" title="3. 新插入的键大小在两个键之间："></a>3. 新插入的键大小在两个键之间：</h5><p>插入左子结点的右结点 x.left.right，这种情况最为复杂。例如B插入A-C<br>此时需要先对A进行**左旋 rotateLeft(A)**，然后就形成了上面2.的情况。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390810-f521bd0ba17be3fb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="新插入的键大小在两个键之间"></p>
+<p><img src="/2018/08/19/RedBlackBST/2.png" alt="新插入的键大小在两个键之间"></p>
 <blockquote>
 <ul>
 <li>由此我们可以看出，插入总是在“ 情况3 -&gt; 情况2 -&gt; 情况1 ”之间转化。</li>
@@ -541,16 +542,16 @@
 <ol>
 <li>如果此时要删除的结点，它的父结点、兄弟结点（父结点的右结点）都是2-结点，则可以将这三个结点<code>flipColors</code>，还原为一个临时的4-结点。这样在我们删除后，依然是3-结点，不会破坏完美平衡，高度-1。</li>
 </ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390810-542396038548741b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="情况1.父结点、兄弟结点都是2-结点"></p>
+<p><img src="/2018/08/19/RedBlackBST/3.png" alt="情况1.父结点、兄弟结点都是2-结点"></p>
 <p>如果它的父结点不是红色，则<strong>想办法变为红色</strong>。</p>
 <ol start="2">
 <li>如果此时要删除的结点，它的父结点是2-结点，而它的兄弟结点不是2-结点，则此时需要<strong>向兄弟结点借一个结点</strong>过来，形成3-结点。</li>
 </ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390810-eaf02c8a1188e525.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="从兄弟结点中借一个结点，e可有可无"></p>
+<p><img src="/2018/08/19/RedBlackBST/4.png" alt="从兄弟结点中借一个结点，e可有可无"></p>
 <ol start="3">
 <li>如果此时要删除的结点，它的父结点不是2-结点，那么<strong>从父结点借一个结点</strong>过来，形成3-结点。</li>
 </ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390810-b48392e589443cec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="两种情况，分别是兄弟结点是否为2-结点"></p>
+<p><img src="/2018/08/19/RedBlackBST/5.png" alt="两种情况，分别是兄弟结点是否为2-结点"></p>
 <p>若兄弟结点不是2-结点，则从父结点借一个结点后，兄弟结点可以补给父结点一个最小的结点，保持树的完美平衡性。<br>若兄弟结点是2-结点，则父结点中最小的结点向下合并，形成临时4-结点。</p>
 <p>待删除完成后，需要自下而上重新整理树的结构，将所有的临时4-结点分解，从而满足我们的等价定义。</p>
 <h5 id="代码实现：-1"><a href="#代码实现：-1" class="headerlink" title="代码实现："></a>代码实现：</h5><blockquote>
@@ -558,7 +559,7 @@
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">moveRedLeft</span><span class="params">(Node h)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//假设h为红色，h.left 和h.left.left都是黑色（h.left和h.left.left都是2-结点）</span></span><br><span class="line">    <span class="comment">//将h.left 或h.left 的子结点之一变红（想办法变红，变为3-结点）</span></span><br><span class="line">    flipColors(h);<span class="comment">//这个方法可以在拆分4-结点和组合4-结点之间变换。</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isRed(h.right.left)) &#123;</span><br><span class="line">    <span class="comment">//兄弟结点为非2-结点，此时经旋转，将红键从右往左传递。见下图。</span></span><br><span class="line">        h.right = rotateRight(h.right);</span><br><span class="line">        h = rotateLeft(h);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/8390810-0e611899a6bbaee0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="moveRedLeft 过程"></p>
+<p><img src="/2018/08/19/RedBlackBST/6.png" alt="moveRedLeft 过程"></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (isEmpty()) <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">    <span class="keyword">if</span> (!isRed(root.left) &amp;&amp; !isRed(root.right))</span><br><span class="line">        root.color = RED;</span><br><span class="line">    root = deleteMin(root);</span><br><span class="line">    <span class="keyword">if</span> (!isEmpty()) root.color = BLACK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">deleteMin</span><span class="params">(Node h)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (h.left == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (!isRed(h.left) &amp;&amp; !isRed(h.left.left))</span><br><span class="line">        h = moveRedLeft(h);</span><br><span class="line">    h.left = deleteMin(h.left);</span><br><span class="line">    <span class="keyword">return</span> balance(h);<span class="comment">//自下而上重新整理树的结构。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>一开始，如果根节点的两个子键都没有红键，则需要我们临时将根节点变红，从而可以拆分出红键。<br>而在删除完成最后，如果树还有结点，则要将根节点还原为黑色，以满足<strong>根节点总是黑色</strong>。<br>其中<code>balance()</code>方法与之前我们进行<code>put</code>后的操作类似，不再赘述。</p>
@@ -570,7 +571,7 @@
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">moveRedRight</span><span class="params">(Node h)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//假设h为红色，h.right 和h.right.left都是黑色（h.right和h.right.left都是2-结点）</span></span><br><span class="line">    <span class="comment">//将h.right 或h.right 的子结点之一变红（想办法变红，变为3-结点）</span></span><br><span class="line">    flipColors(h);</span><br><span class="line">    <span class="keyword">if</span> (!isRed(h.left.left))<span class="comment">//两个子结点均为2-结点</span></span><br><span class="line">        h = rotateRight(h);</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/8390810-5196626cfe0f8042.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="两个子结点都是2-结点的删除示意"></p>
+<p><img src="/2018/08/19/RedBlackBST/7.png" alt="两个子结点都是2-结点的删除示意"></p>
 <p>如图示不难理解，由于我们删除的是最大值，所以键一定在右子结点中，故要将红键从左往右传递。其与操作与deleteMin差不多，就不赘述了。但是要记住，我们这些局部的旋转和移动都不会改变树的组成（见2-3树性质）。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteMax</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (isEmpty()) <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">    <span class="keyword">if</span> (!isRed(root.left) &amp;&amp; !isRed(root.right))</span><br><span class="line">        root.color = RED;</span><br><span class="line">    root = deleteMax(root);</span><br><span class="line">    <span class="keyword">if</span> (!isEmpty()) root.color = BLACK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">deleteMax</span><span class="params">(Node h)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (isRed(h.left))<span class="comment">//由于我们删除的键总在右子结点中</span></span><br><span class="line">        h = rotateRight(h);</span><br><span class="line">    <span class="keyword">if</span> (h.right == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!isRed(h.right) &amp;&amp; !isRed(h.right.left))<span class="comment">//h.right是个2-结点</span></span><br><span class="line">        h = moveRedRight(h);<span class="comment">//此时将红键从左向右传递</span></span><br><span class="line">    h.right = deleteMax(h.right);</span><br><span class="line">    <span class="keyword">return</span> balance(h);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -586,7 +587,7 @@
 <li>我们在这里主要采用的是寻找右子键中最小值来交换自己的位置，此时待删除结点就从树的中间部分被交换到了树的末端，从而删除右子键中的最小值，简化为删除最小值的问题。</li>
 <li>最后也要记得自下而上整理整个树的结构，满足我们的等价定义。</li>
 </ul>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390810-9abf46a548a7b9f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="删除B的简易示意图"></p>
+<p><img src="/2018/08/19/RedBlackBST/8.png" alt="删除B的简易示意图"></p>
 <h3 id="性能："><a href="#性能：" class="headerlink" title="性能："></a>性能：</h3><blockquote>
 <ul>
 <li><strong>无论我们如何插入键值，红黑树都是几乎完美平衡的。</strong></li>
@@ -621,7 +622,7 @@
         <p><span>本文标题:</span><a href="/2018/08/19/RedBlackBST/">红黑树</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
         <p><span>发布时间:</span>2018-08-19, 01:23:51</p>
-        <p><span>最后更新:</span>2020-09-12, 16:12:15</p>
+        <p><span>最后更新:</span>2020-09-13, 17:49:11</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2018/08/19/RedBlackBST/" title="红黑树">http://yif-hong.github.io/2018/08/19/RedBlackBST/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yif-hong.github.io/2018/08/19/RedBlackBST/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
