@@ -15,17 +15,21 @@
 
 
 
-<meta name="description" content="Android&#x2F;Coder&#x2F;Photo&#x2F;Drawer&#x2F;Comic">
-<meta property="og:type" content="website">
-<meta property="og:title" content="All tags">
-<meta property="og:url" content="http://yif-hong.github.io/tags/index.html">
+<meta name="description" content="“对于程序员而言，刷了Leetcode不一定能拿offer，但是不刷肯定拿不到offer。” Lusion鲁迅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Largest-Common-SubString Algorithm">
+<meta property="og:url" content="http://yif-hong.github.io/2020/10/11/DP-LCS/index.html">
 <meta property="og:site_name" content="Yif">
-<meta property="og:description" content="Android&#x2F;Coder&#x2F;Photo&#x2F;Drawer&#x2F;Comic">
+<meta property="og:description" content="“对于程序员而言，刷了Leetcode不一定能拿offer，但是不刷肯定拿不到offer。” Lusion鲁迅">
 <meta property="og:locale">
-<meta property="article:published_time" content="2018-08-18T16:43:05.000Z">
-<meta property="article:modified_time" content="2020-09-12T08:12:15.282Z">
+<meta property="og:image" content="http://yif-hong.github.io/2020/10/11/DP-LCS/LeetcodeExercise/luxun.jpg">
+<meta property="article:published_time" content="2020-10-11T01:20:49.000Z">
+<meta property="article:modified_time" content="2020-10-11T01:03:24.650Z">
 <meta property="article:author" content="Yif Hong">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Leetcode">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yif-hong.github.io/2020/10/11/DP-LCS/LeetcodeExercise/luxun.jpg">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -59,7 +63,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>All tags | Yif</title>
+<title>Largest-Common-SubString Algorithm | Yif</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -69,7 +73,7 @@
         fancybox: true,
         animate: true,
         isHome: false,
-        isPost: false,
+        isPost: true,
         isArchive: false,
         isTag: false,
         isCategory: false,
@@ -284,11 +288,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="page-" class="article article-type-page" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-DP-LCS" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/tags/index.html" class="article-date">
-      <time datetime="2018-08-18T16:43:05.000Z" itemprop="datePublished">2018-08-19</time>
+      <a href="/2020/10/11/DP-LCS/" class="article-date">
+      <time datetime="2020-10-11T01:20:49.000Z" itemprop="datePublished">2020-10-11</time>
 </a>
 
 
@@ -303,7 +307,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      All tags
+      Largest-Common-SubString Algorithm
     </h1>
   
 
@@ -311,8 +315,16 @@
       
       <div class="article-info article-info-post">
         
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Leetcode/">Leetcode</a>
+    </div>
+
 
         
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a></li></ul>
+    </div>
+
         <div class="clearfix"></div>
       </div>
       
@@ -320,96 +332,92 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-              <style>
-    .article-meta { display: none; }
-    #container .article .article-title { padding-right: 0; }
-    .article-header {
-        padding: 0;
-        padding-top: 26px;
-        border-left: none;
-        text-align: center;
-    }
-    .article-header:hover { border-left: none; }
-    .article-title { font-size: 1.6em }
-    .article-entry hr { margin: 0;}
-    .article-meta,
-    #container .article-info-post.article-info { display: none;}
-    #container .article .article-title { padding: 0; }
-</style>
+        <blockquote><p><strong>“对于程序员而言，刷了Leetcode不一定能拿offer，但是不刷肯定拿不到offer。”</strong></p>
+<footer><strong>Lusion</strong><cite>鲁迅</cite></footer></blockquote>
+<a id="more"></a>
+
+<p><img src="/2020/10/11/DP-LCS/LeetcodeExercise/luxun.jpg" alt="Lusion"></p>
+<h3 id="Largest-Common-SubString-Algorithm"><a href="#Largest-Common-SubString-Algorithm" class="headerlink" title="Largest-Common-SubString Algorithm"></a>Largest-Common-SubString Algorithm</h3><p>$$<br>Time: \ T(n)=\Theta(m<em>n)<br>\<br>Space: \ V(n) = \Theta(m</em>n)<br>$$</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">LCS(X,Y):</span><br><span class="line">	m &#x3D; X.length - 1 </span><br><span class="line">	n &#x3D; Y.length - 1</span><br><span class="line">	let c[0...m][0...n], s[1..m][1..n] as new array</span><br><span class="line">	for i &#x3D; 0 to n</span><br><span class="line">		c[0][i] &#x3D; 0</span><br><span class="line">	for i &#x3D; 1 to m</span><br><span class="line">		c[i][0] &#x3D; 0</span><br><span class="line">	for i &#x3D; 1 to m</span><br><span class="line">		for j &#x3D; 1 to n</span><br><span class="line">			if X[i] &#x3D;&#x3D; Y[j]</span><br><span class="line">				c[i][j] &#x3D; c[i-1][j-1] + 1</span><br><span class="line">				s[i][j] &#x3D; &quot;hit&quot;</span><br><span class="line">			else</span><br><span class="line">				if c[i][j] &lt;&#x3D; c[i-1][j]</span><br><span class="line">					c[i][j] &#x3D; c[i-1][j]</span><br><span class="line">					s[i][j] &#x3D; &quot;up&quot;</span><br><span class="line">				else </span><br><span class="line">					c[i][j] &#x3D; c[i][j-1]</span><br><span class="line">					s[i][j] &#x3D; &quot;left&quot;</span><br><span class="line">	return c &amp;&amp; s</span><br><span class="line">	</span><br><span class="line">PRINT-LCS()</span><br><span class="line">  c,s &#x3D; LCS(X,Y)</span><br><span class="line">	PRINT-LCS(s,X,X.length-1,Y.length-1)</span><br><span class="line"></span><br><span class="line">PRINT-LCS(s,X,m,n)</span><br><span class="line">	if m &#x3D;&#x3D; 0 || n &#x3D;&#x3D; 0</span><br><span class="line">		return</span><br><span class="line">	if s[m][n] &#x3D;&#x3D; &quot;hit&quot;</span><br><span class="line">		print X[m][n]</span><br><span class="line">		PRINT-LCS(s[m-1][n-1],X,m-1,n-1)</span><br><span class="line">	else if s[m][n] &#x3D;&#x3D; &quot;up&quot;</span><br><span class="line">		PRINT-LCS(s[m-1][n],X,m-1,n)</span><br><span class="line">	else PRINT-LCS(s[m][n-1],X,m,n-1)</span><br></pre></td></tr></table></figure>
+
+<h4 id="Space-optimize"><a href="#Space-optimize" class="headerlink" title="Space optimize"></a>Space optimize</h4><h5 id="2-D-Vector-Storage"><a href="#2-D-Vector-Storage" class="headerlink" title="2-D Vector Storage"></a>2-D Vector Storage</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">c[i][j] comes from c[i-1][j-1], c[i-1][j], c[i][j-1]</span><br><span class="line">make c[2][n] to store c[i][j]</span><br></pre></td></tr></table></figure>
+
+<p>$$<br>Time: \ T(n)=\Theta(m*n)<br>\<br>Space: \ V(n) = \Theta(2n)<br>$$</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">LCS(X,Y):</span><br><span class="line">	m &#x3D; X.length - 1 </span><br><span class="line">	n &#x3D; Y.length - 1</span><br><span class="line">	let c[2][0...n], s[1..m][1..n] as new array</span><br><span class="line">	for i &#x3D; 0 to n</span><br><span class="line">		c[0][i] &#x3D; 0</span><br><span class="line">	for i &#x3D; 1 to 2</span><br><span class="line">		c[i][0] &#x3D; 0</span><br><span class="line">	for i &#x3D; 1 to m</span><br><span class="line">		for j &#x3D; 1 to n</span><br><span class="line">			if X[i] &#x3D;&#x3D; Y[j]</span><br><span class="line">				c[i%2][j] &#x3D; c[(i-1)%2][j-1] + 1</span><br><span class="line">				s[i][j] &#x3D; &quot;hit&quot;</span><br><span class="line">			else</span><br><span class="line">				if c[i%2][j] &lt;&#x3D; c[(i-1)%2][j]</span><br><span class="line">					c[i%2][j] &#x3D; c[(i-1)%2][j]</span><br><span class="line">					s[i][j] &#x3D; &quot;up&quot;</span><br><span class="line">				else </span><br><span class="line">					c[i%2][j] &#x3D; c[i%2][j-1]</span><br><span class="line">					s[i][j] &#x3D; &quot;left&quot;</span><br><span class="line">	return c &amp;&amp; s</span><br></pre></td></tr></table></figure>
 
 
-    <!-- Tag Cloud Page -->
-    <hr>
-<br>
-<ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Leetcode/">Leetcode</a><span class="category-list-count">4</span></li></ul>
 
-<p class="count"></p>
+<h5 id="1-D-Vector-Storage"><a href="#1-D-Vector-Storage" class="headerlink" title="1-D Vector Storage"></a>1-D Vector Storage</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">c[i][j] comes from c[i-1][j-1], c[i-1][j], c[i][j-1]</span><br><span class="line">make c[n] to store c[i][j]</span><br><span class="line"></span><br><span class="line">c[i][j] &#x3D; 0 , i&#x3D;&#x3D;0 || j&#x3D;&#x3D;0</span><br><span class="line">c[i][j] &#x3D; c[i-1][j-1], X[i] &#x3D;&#x3D; Y[j]</span><br><span class="line">c[i][j] &#x3D; max&#123; c[i-1][j], c[i][j-1] &#125;</span><br></pre></td></tr></table></figure>
 
-<div class="tags">
-    <a href="/tags/Algorithm/" style="font-size: 30.25px; color: #202020">Algorithm</a> <a href="/tags/Concurrency/" style="font-size: 16px; color: #808080">Concurrency</a> <a href="/tags/Graph/" style="font-size: 20.75px; color: #606060">Graph</a> <a href="/tags/JVM/" style="font-size: 16px; color: #808080">JVM</a> <a href="/tags/Java/" style="font-size: 35px; color: #000">Java</a> <a href="/tags/Leetcode/" style="font-size: 20.75px; color: #606060">Leetcode</a> <a href="/tags/review/" style="font-size: 25.5px; color: #404040">review</a>
-</div>
-<style>
-    .category-list li{
-        display: inline-block;
-        margin: 0 1em .5em 0;
-        padding: 4px;
-        border: 1px solid lightgray;
-        font-size: 1.2rem;
-    }
-    .category-list a { color: gray; }
-    .category-list-item:hover a {
-        color: gray;
-        text-decoration: none;
-    }
-    .category-list-count {
-        margin-left: 2px;
-        font-size: .9rem;
-    }
-    .article-entry ul li:before{ display: none; }
-    .article-inner { text-align: center; }
-    .tags {
-        max-width: 42em;
-        margin: 2em auto;
-        margin-top: 0em;
-    }
-    .tags a {
-        margin-right: 1em;
-        line-height: 65px;
-        border-bottom: 1px solid gray;
-        white-space: nowrap;
-        transition: border-bottom .5s;
-    }
-    .tags a:hover {
-        border-bottom: 3px dotted gray;
-        text-decoration: none;
-    }
-    #count > span {
-        margin: auto .2em;
-        font-weight: bold;
-    }
-</style>
+<p>$$<br>Time: \ T(n)=\Theta(m*n)<br>\<br>Space: \ V(n) = \Theta(n)<br>$$</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">LCS(X,Y):</span><br><span class="line">	m &#x3D; X.length - 1 </span><br><span class="line">	n &#x3D; Y.length - 1</span><br><span class="line">	let c[n], s[1..m][1..n] as new array</span><br><span class="line">	for i &#x3D; 0 to n</span><br><span class="line">		c[i] &#x3D; 0</span><br><span class="line">	prev &#x3D; 0</span><br><span class="line">	for i &#x3D; 1 to m</span><br><span class="line">		for j &#x3D; 1 to n</span><br><span class="line">			temp &#x3D; c[j]</span><br><span class="line">			if X[i] &#x3D;&#x3D; Y[j]</span><br><span class="line">				c[j] &#x3D; prev + 1</span><br><span class="line">				s[i][j] &#x3D; &quot;hit&quot;</span><br><span class="line">			else</span><br><span class="line">				if c[j] &lt;&#x3D; c[j-1]</span><br><span class="line">					c[j] &#x3D; c[j-1]</span><br><span class="line">					s[i][j] &#x3D; &quot;up&quot;</span><br><span class="line">				else</span><br><span class="line">					s[i][j] &#x3D; &quot;left&quot;</span><br><span class="line">			prev &#x3D; temp</span><br><span class="line">	return c &amp;&amp; s</span><br></pre></td></tr></table></figure>
 
-<!-- Count tags and categories -->
-<p id="count">
-        已有<span><script>document.write($(".category-list-item").length)</script></span>个分类，
-        共计<span><script>document.write($(".tags > a").length)</script></span>个标签
-</p>
-<script>
-    $('#count').appendTo('.count');
-</script>
 
-          
-        
       
     </div>
     
   </div>
   
     
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2020/10/11/DP-LCS/">Largest-Common-SubString Algorithm</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页"></a></p>
+        <p><span>发布时间:</span>2020-10-11, 09:20:49</p>
+        <p><span>最后更新:</span>2020-10-11, 09:03:24</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2020/10/11/DP-LCS/" title="Largest-Common-SubString Algorithm">http://yif-hong.github.io/2020/10/11/DP-LCS/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yif-hong.github.io/2020/10/11/DP-LCS/　　作者: " title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
 
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2020/10/11/LC-offer-17/">
+                    剑指 Offer 17. 打印从 1 到最大的 n 位数
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2020/10/11/DFS-Review/">
+                    DFS-Review
+                </a>
+            </div>
+        
+    </nav>
 
   
 </article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Largest-Common-SubString-Algorithm"><span class="toc-number">1.</span> <span class="toc-text">Largest-Common-SubString Algorithm</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Space-optimize"><span class="toc-number">1.1.</span> <span class="toc-text">Space optimize</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-D-Vector-Storage"><span class="toc-number">1.1.1.</span> <span class="toc-text">2-D Vector Storage</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-D-Vector-Storage"><span class="toc-number">1.1.2.</span> <span class="toc-text">1-D Vector Storage</span></a></li></ol></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
 
 
 
@@ -427,7 +435,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"All tags　| Yif　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Largest-Common-SubString Algorithm　| Yif　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -448,8 +456,8 @@
     <div id="disqus_thread"></div>
     <script>
         var disqus_config = function(){
-            this.page.url = 'http://yif-hong.github.io/tags/index.html';
-            this.page.identifier = 'tags/index.html';
+            this.page.url = 'http://yif-hong.github.io/2020/10/11/DP-LCS/';
+            this.page.identifier = '2020/10/11/DP-LCS/';
         };
         var loadComment = function(){
             var d = document, s = d.createElement('script');
@@ -466,6 +474,26 @@
 
     
 
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2020/10/11/LC-offer-17/" title="上一篇: 剑指 Offer 17. 打印从 1 到最大的 n 位数">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2020/10/11/DFS-Review/" title="下一篇: DFS-Review">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/10/11/LC-offer-17/">剑指 Offer 17. 打印从 1 到最大的 n 位数</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/10/11/DP-LCS/">Largest-Common-SubString Algorithm</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/10/11/DFS-Review/">DFS-Review</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/09/13/RedBlackBST-Review/">RedBlackBST Review</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/09/13/BinarySearchTree-Review/">BinarySearchTree Review</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/09/13/HeapSort-Review/">HeapSort Review</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/09/12/MergeSort-Review/">MergeSort Review</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/09/12/QuickSort-Review/">QuickSort Review</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/29/BaseSort/">排序算法——基于比较的算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/19/java-constructor/">当我们谈论Java构造器时，我们在讨论什么？</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/11/Volatile/">Volatile关键字解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-SP/">图论——最短路径</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-MST/">图论——最小生成树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/02/Graph-Topological/">图论——拓扑排序</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/01/Graph-general/">图论——基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/LeetcodeExercise/">Leetcode刷题记录（日更）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/HashTable/">散列表</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/RedBlackBST/">红黑树</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/19/BST/">二叉树</a></li></ul>
 
 
 
